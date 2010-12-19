@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>bioden Help Contents</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="./main.css" />
+</head>
+<body>
+    <div id='content'>
+        <h1>Welcome to bioden's Documentation</h1>
+
+        <div class="section" id="using-bioden">
+            <h2>Using bioden <a class="headerlink" href="#using-bioden">&para;</a></h2>
+            <p>
+            Bioden (<code>bioden.py</code>) is a command-line interface
+            (CLI) application. This means that you can run it from
+            the command line (the "terminal" on UNIX systems or "DOS" on
+            Windows systems). Bioden also comes with a graphical
+            frontend (<code>bioden-gtk.pyw</code>), which is probably
+            more suitable for Windows users. Skip to the
+            <a class="headerlink" href="#using-gui">GUI section</a> for
+            help on using the frontend, or go to the
+            <a class="headerlink" href="#using-cli">CLI section</a> for
+            help on running bioden from the command-line.
+            </p>
+        </div>
+
+        <div class="section" id="using-gui">
+            <h2>Using bioden (GUI) <a class="headerlink" href="#using-gui">&para;</a></h2>
+            <p>
+            Start bioden by running <code>bioden-gtk.pyw</code>. This
+            can be done by (double) clicking it. Note that <code>bioden.py</code>
+            and <code>bioden-gtk.pyw</code> must be in the same folder.
+            </p>
+            <p>
+            Once bioden is started, you'll be presented with its main
+            window. The window has the following elements:
+            </p>
+            <dl>
+                <dt>Select data file</dt>
+                <dd>The CSV file containing the biomass and density
+                data to be normalized.</dd>
+
+                <dt>Select output folder</dt>
+                <dd>Select the folder to which all output files should
+                be saved.</dd>
+
+                <dt>Property for calculations</dt>
+                <dd>The property to perform the calculations on. Can
+                be either 'biomass' or 'density'.</dd>
+
+                <dt>Advanced Options</dt>
+                <dd>Clicking this toggle button shows/hides the
+                advanced options.</dd>
+
+                <dt>Field delimiter of the input file:</dt>
+                <dd>A one-character string used to separate fields in
+                the input CSV file. It defaults to a semicolon (;).
+                By default Excel uses the semicolon to export CSV file.
+                If the CSV file is exported by a different application,
+                make sure this character matches the delimiter in the
+                data file. You can check this simply by opening the
+                data file in a text editor (like Notepad).</dd>
+
+                <dt>Quote character of the input file:</dt>
+                <dd>A one-character string used to separate fields in
+                the input CSV file. It defaults to a double quote (").</dd>
+
+                <dt>Round values to n decimals:</dt>
+                <dd>Number of decimals to round values to in the output
+                files. Value "-1" (default) means do not round.</dd>
+
+                <dt>Process Data</dt>
+                <dd>Clicking the button starts the data processing.
+                While it's processing the data, a progress dialog is
+                displayed. Be patient, the calculations could take some
+                time to finish based on the amount of data in the data
+                file.</dd>
+            </dl>
+        </div>
+
+        <div class="section" id="using-cli">
+            <h2>Using bioden (CLI) <a class="headerlink" href="#using-cli">&para;</a></h2>
+            <p>
+            Start your terminal application and move to the folder
+            containing <code>bioden.py</code>. Then type the following
+            command to execute bioden: <code>./bioden.py</code>
+            </p>
+            <p>
+            Running bioden like that (without arguments) will display
+            its usage information in the terminal.
+            <pre>
+serrano@saibot:~$ ./bioden.py
+bioden 0.1
+
+Usage: bioden.py [options] -i [input_file] -o [output_folder]
+
+Options:
+   -h,--help                     Show this usage information.
+   -i [input_file]               Input CSV file (*.csv).
+   -o [output_folder]            Folder to save the output files in.
+   -d,--delimiter "[char]"       A one-character string used to
+                                 separate fields. It defaults to ';'.
+   -q,--quotechar "[char]"       A one-character string used to quote
+                                 fields containing special characters.
+                                 It defaults to '"'.
+   -p,--property [property]      The property on which to perform the
+                                 calculations. Can be either 'biomass'
+                                 (default) or 'density'.
+   -r,--round [n]                Round values to [n] decimals. Default
+                                 is not to round.
+
+            </pre>
+            The usage information
+            should be straightforward. Here is a simple usage example:
+            <br/>
+            <code>./bioden.py -i input.csv -o data/ -p biomass</code>
+            </p>
+            <p>
+            The output for that command should look something like this:
+            <pre>
+serrano@saibot:~$ ./bioden.py -i input.csv -o data/ -p biomass
+INFO Loading data...
+INFO Processing data for property 'biomass'...
+INFO Processing ecotope 'Polyhaline_Subtidal_Sand'...
+INFO Processing ecotope 'Polyhaline_Intertidal_mud'...
+INFO Processing ecotope 'Polyhaline_Subtidal_Mud'...
+INFO Processing ecotope 'Polyhaline_Intertidal_Sand'...
+INFO Processing ecotope 'Polyhaline_Intertidal_Mud'...
+INFO Processing ecotope 'Mesohaline_Subtidal_Sand'...
+INFO Processing ecotope 'Mesohaline_Intertidal_Mud'...
+INFO Processing ecotope 'Mesohaline_Intertidal_Sand'...
+INFO Processing ecotope 'Mesohaline_Subtidal_Mud'...
+INFO Saving transponed data of ecotope 'Polyhaline_Subtidal_Sand' to data/transponed_biomass_Polyhaline_Subtidal_Sand.csv
+INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_mud' to data/transponed_biomass_Polyhaline_Intertidal_mud.csv
+INFO Saving transponed data of ecotope 'Polyhaline_Subtidal_Mud' to data/transponed_biomass_Polyhaline_Subtidal_Mud.csv
+INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_Sand' to data/transponed_biomass_Polyhaline_Intertidal_Sand.csv
+INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_Mud' to data/transponed_biomass_Polyhaline_Intertidal_Mud.csv
+INFO Saving transponed data of ecotope 'Mesohaline_Subtidal_Sand' to data/transponed_biomass_Mesohaline_Subtidal_Sand.csv
+INFO Saving transponed data of ecotope 'Mesohaline_Intertidal_Mud' to data/transponed_biomass_Mesohaline_Intertidal_Mud.csv
+INFO Saving transponed data of ecotope 'Mesohaline_Intertidal_Sand' to data/transponed_biomass_Mesohaline_Intertidal_Sand.csv
+INFO Saving transponed data of ecotope 'Mesohaline_Subtidal_Mud' to data/transponed_biomass_Mesohaline_Subtidal_Mud.csv
+INFO Saving raw groups of ecotope 'Polyhaline_Subtidal_Sand' to data/raw_biomass_Polyhaline_Subtidal_Sand.csv
+INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_mud' to data/raw_biomass_Polyhaline_Intertidal_mud.csv
+INFO Saving raw groups of ecotope 'Polyhaline_Subtidal_Mud' to data/raw_biomass_Polyhaline_Subtidal_Mud.csv
+INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_Sand' to data/raw_biomass_Polyhaline_Intertidal_Sand.csv
+INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_Mud' to data/raw_biomass_Polyhaline_Intertidal_Mud.csv
+INFO Saving raw groups of ecotope 'Mesohaline_Subtidal_Sand' to data/raw_biomass_Mesohaline_Subtidal_Sand.csv
+INFO Saving raw groups of ecotope 'Mesohaline_Intertidal_Mud' to data/raw_biomass_Mesohaline_Intertidal_Mud.csv
+INFO Saving raw groups of ecotope 'Mesohaline_Intertidal_Sand' to data/raw_biomass_Mesohaline_Intertidal_Sand.csv
+INFO Saving raw groups of ecotope 'Mesohaline_Subtidal_Mud' to data/raw_biomass_Mesohaline_Subtidal_Mud.csv
+INFO Saving normalized groups of ecotope 'Polyhaline_Subtidal_Sand' to data/ambi_biomass_Polyhaline_Subtidal_Sand.csv
+INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_mud' to data/ambi_biomass_Polyhaline_Intertidal_mud.csv
+INFO Saving normalized groups of ecotope 'Polyhaline_Subtidal_Mud' to data/ambi_biomass_Polyhaline_Subtidal_Mud.csv
+INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_Sand' to data/ambi_biomass_Polyhaline_Intertidal_Sand.csv
+INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_Mud' to data/ambi_biomass_Polyhaline_Intertidal_Mud.csv
+INFO Saving normalized groups of ecotope 'Mesohaline_Subtidal_Sand' to data/ambi_biomass_Mesohaline_Subtidal_Sand.csv
+INFO Saving normalized groups of ecotope 'Mesohaline_Intertidal_Mud' to data/ambi_biomass_Mesohaline_Intertidal_Mud.csv
+INFO Saving normalized groups of ecotope 'Mesohaline_Intertidal_Sand' to data/ambi_biomass_Mesohaline_Intertidal_Sand.csv
+INFO Saving normalized groups of ecotope 'Mesohaline_Subtidal_Mud' to data/ambi_biomass_Mesohaline_Subtidal_Mud.csv
+INFO Saving representative groups to data/representatives_biomass.csv
+INFO done.
+            </pre>
+            </p>
+        </div>
+
+        <div class="section" id="output">
+            <h2>Output <a class="headerlink" href="#output">&para;</a></h2>
+            <p>
+            Bioden creates different files in the specified output
+            folder.
+            </p>
+            <dl>
+                <dt>Transponed data files (<code>transponed_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>These files contain the raw data, but the data has
+                transponed (=moved). The first column in the file shows
+                a list of all taxa. Each row is a specific sample indicated
+                with the sample code. Each data row contains the biomass/density
+                for that taxa and sample code.</dd>
+
+                <dt>RAW data files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>TODO</dd>
+
+                <dt>AMBI data files (<code>ambi_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>TODO</dd>
+
+                <dt>Representatives data file (<code>representatives_&lt;property&gt;.csv</code>)</dt>
+                <dd>TODO</dd>
+            </dl>
+        </div>
+    </div>
+</body>
+</html>
