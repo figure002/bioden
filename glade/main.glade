@@ -15,7 +15,6 @@
         <child>
           <object class="GtkMenuBar" id="menubar">
             <property name="visible">True</property>
-            <property name="ubuntu_local">True</property>
             <child>
               <object class="GtkMenuItem" id="menu_help">
                 <property name="visible">True</property>
@@ -24,7 +23,6 @@
                 <child type="submenu">
                   <object class="GtkMenu" id="menuitem1">
                     <property name="visible">True</property>
-                    <property name="ubuntu_local">True</property>
                     <child>
                       <object class="GtkMenuItem" id="menuitem_help">
                         <property name="visible">True</property>

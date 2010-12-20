@@ -20,7 +20,6 @@
 
 import sys
 import os
-import subprocess
 import time
 import threading
 import webbrowser
@@ -91,7 +90,7 @@ class ProgressDialog(object):
 
     def __init__(self):
         self.builder = gtk.Builder()
-        self.builder.add_from_file('pdialog.glade')
+        self.builder.add_from_file('glade/pdialog.glade')
 
         self.dialog = self.builder.get_object('progress_dialog')
         self.pbar = self.builder.get_object('progressbar')
@@ -102,7 +101,7 @@ class ProgressDialog(object):
 class MainWindow(object):
     def __init__(self):
         self.builder = gtk.Builder()
-        self.builder.add_from_file('main.glade')
+        self.builder.add_from_file('glade/main.glade')
 
         self.window = self.builder.get_object('main_window')
         self.builder.connect_signals(self)
@@ -164,7 +163,7 @@ class MainWindow(object):
         quotechar = self.builder.get_object('input_quotechar').get_text()
         active = self.combobox_property.get_active()
         property = self.liststore_property[active][0]
-        round_to = "%d" % self.builder.get_object('spinbutton_round').get_value()
+        decimals = int(self.builder.get_object('spinbutton_round').get_value())
 
         # Create a CSV reader for the input file.
         reader = csv.DictReader(open(input_file), fieldnames=None,
@@ -180,9 +179,9 @@ class MainWindow(object):
         t.set_output_folder(output_folder)
         t.set_progress_dialog(self.pd)
 
-        # Set the 'round' if 'round_to' set to 0 or higher.
-        if int(round_to) >= 0:
-            t.set_round(round_to)
+        # Set 'round' if 'decimals' set to 0 or higher.
+        if decimals >= 0:
+            t.set_round(decimals)
 
         # Start processing the data.
         t.start()
@@ -193,7 +192,7 @@ class MainWindow(object):
 
         message_finished = self.show_message("Finished!",
             "The data was successfully processed. The output files "
-            "have been saved to %s" % output_folder)
+            "have been saved to '%s'." % output_folder)
 
     def on_load_data_failed(self, sender):
         """Show a error dialog showing that loading the data has failed."""
@@ -217,13 +216,14 @@ class MainWindow(object):
             buttons=gtk.BUTTONS_OK,
             message_format=title)
         dialog.format_secondary_text(message)
+        dialog.set_position(gtk.WIN_POS_CENTER)
 
         response = dialog.run()
         dialog.destroy()
 
     def on_about(self, widget, data=None):
         builder = gtk.Builder()
-        builder.add_from_file('about.glade')
+        builder.add_from_file('glade/about.glade')
 
         about = builder.get_object('about_dialog')
         about.set_version(__version__)
