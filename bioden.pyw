@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# bioden - description here...
+# bioden - A data normalizer and transponer for CSV files containing
+# taxon biomass/density data for ecotopes.
 #
 #  Copyright 2010, GiMaRIS <info@gimaris.com>
 #

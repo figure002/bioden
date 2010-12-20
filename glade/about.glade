@@ -8,7 +8,7 @@
     <property name="type_hint">normal</property>
     <property name="program_name">bioden</property>
     <property name="copyright" translatable="yes">Copyright 2010, GiMaRIS</property>
-    <property name="comments" translatable="yes">Normalizer for ecotope biomass/density data.</property>
+    <property name="comments" translatable="yes">A data normalizer and transponer for CSV files containing taxon biomass/density data for ecotopes.</property>
     <property name="website">http://www.gimaris.com/</property>
     <property name="license" translatable="yes">bioden is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
