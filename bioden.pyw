@@ -20,11 +20,28 @@
 
 import sys
 import os
-import getopt
+import subprocess
+import time
+import threading
+import webbrowser
 import csv
 import logging
-import random
 from sqlite3 import dbapi2 as sqlite
+
+try:
+    import pygtk
+except ImportError:
+    sys.exit("This tool requires PyGTK for Python 2.6. "
+        "Please install this module and try again.")
+pygtk.require('2.0')
+import gtk
+try:
+    import gobject
+except ImportError:
+    sys.exit("This tool requires PyGObject for Python 2.6. "
+        "Please install this module and try again.")
+
+gobject.threads_init()
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, GiMaRIS"
@@ -36,98 +53,6 @@ __email__ = "serrano.pereira@gmail.com"
 __status__ = "Production"
 __date__ = "2010/12/12"
 
-
-def main(argv):
-    # Show INFO logs.
-    logging.basicConfig(level=logging.INFO,
-        format='%(levelname)s %(message)s')
-
-    # Default settings.
-    has_header = True
-    input_file = None
-    output_folder = None
-    delimiter = ";"
-    quotechar = '"'
-    property = 'biomass'
-    do_round = None
-
-    try:
-        opts, args = getopt.getopt(argv, 'hd:q:p:r:i:o:',
-            ['help', 'delimiter=', 'quotechar=', 'property=', 'round='])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(1)
-
-    # Handle arguments.
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage()
-        elif opt in ("-i"):
-            input_file = arg
-        elif opt in ("-o"):
-            output_folder = arg
-        elif opt in ("-d", "--delimiter"):
-            delimiter = arg
-        elif opt in ("-q", "--quotechar"):
-            quotechar = arg
-        elif opt in ("-p", "--property"):
-            property = arg
-        elif opt in ("-r", "--round"):
-            do_round = int(arg)
-
-    if not input_file or not output_folder:
-        usage()
-
-    # Check if the input file and output folder exist.
-    if not os.path.isfile(input_file):
-        sys.exit("Input file does not exist.")
-    if not os.path.exists(output_folder):
-        sys.exit("Output folder does not exist. Please make it first.")
-
-    # Create a CSV reader for the input file.
-    csvfile = open(input_file)
-    reader = csv.DictReader(csvfile, fieldnames=None,
-        delimiter=delimiter, quotechar=quotechar)
-
-    # Create a data processor.
-    p = DataProcessor()
-    # Tell the data processor to round values if requested by the user.
-    if isinstance(do_round, int):
-        p.do_round = do_round
-    # Provide the data processor with a CSV reader.
-    p.set_csv_reader(reader)
-    # Load the data.
-    p.load_data()
-    # Process data for the property.
-    p.process(property)
-
-    # Export the results.
-    p.export_ecotopes_transponed(output_folder)
-    p.export_ecotopes(output_folder, 'raw')
-    p.export_ecotopes(output_folder, 'normalized')
-    p.export_representatives(output_folder)
-
-    logging.info("done.")
-
-def usage():
-    """Show usage information."""
-    print "bioden %s\n" % __version__
-    print "Usage: %s [options] -i [input_file] -o [output_folder]\n" % ( os.path.split(sys.argv[0])[1] )
-    print "Options:"
-    print "   -h,--help                     Show this usage information."
-    print "   -i [input_file]               Input CSV file (*.csv)."
-    print "   -o [output_folder]            Folder to save the output files in."
-    print "   -d,--delimiter \"[char]\"       A one-character string used to\n \
-                                separate fields. It defaults to ';'."
-    print "   -q,--quotechar \"[char]\"       A one-character string used to quote\n \
-                                fields containing special characters.\n \
-                                It defaults to '\"'."
-    print "   -p,--property [property]      The property on which to perform the\n \
-                                calculations. Can be either 'biomass' \n \
-                                (default) or 'density'."
-    print "   -r,--round [n]                Round values to [n] decimals. Default\n \
-                                is not to round."
-    sys.exit()
 
 def to_float(x):
     """Return the float from a number which uses a comma as the decimal
@@ -150,16 +75,194 @@ def median(values):
         upper = values[count/2]
         return (float(lower + upper)) / 2
 
-class DataProcessor(object):
+
+class Sender(gobject.GObject):
+    """Custom GObject for emitting custom signals."""
+    __gsignals__ = {
+        'process-finished': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        'load-data-failed': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+    }
+
     def __init__(self):
+        gobject.GObject.__init__(self)
+
+class ProgressDialog(object):
+    """Display a progress dialog."""
+
+    def __init__(self):
+        self.builder = gtk.Builder()
+        self.builder.add_from_file('pdialog.glade')
+
+        self.dialog = self.builder.get_object('progress_dialog')
+        self.pbar = self.builder.get_object('progressbar')
+        self.label_action = self.builder.get_object('label_action')
+
+        self.dialog.show()
+
+class MainWindow(object):
+    def __init__(self):
+        self.builder = gtk.Builder()
+        self.builder.add_from_file('main.glade')
+
+        self.window = self.builder.get_object('main_window')
+        self.builder.connect_signals(self)
+
+        # Complete some incomplete widgets.
+        self.complete_widgets()
+
+        # Handle application signals.
+        self.handler1 = sender.connect('process-finished',
+            self.on_process_finished)
+        self.handler2 = sender.connect('load-data-failed',
+            self.on_load_data_failed)
+
+    def complete_widgets(self):
+        """Complete incomplete widgets. These are the things I couldn't
+        set from Glade 3."""
+
+        # Create a CSV filter for file choosers.
+        self.filefilter_csv = gtk.FileFilter()
+        self.filefilter_csv.set_name("Comma Seperated File (*.csv)")
+        self.filefilter_csv.add_mime_type("text/csv")
+        self.filefilter_csv.add_pattern("*.csv")
+
+        # Add a CSV filter to the file chooser.
+        self.chooser_input_file = self.builder.get_object('chooser_input_file')
+        self.chooser_input_file.add_filter(self.filefilter_csv)
+
+        # Add items to the 'property' combobox.
+        self.liststore_property = gtk.ListStore(gobject.TYPE_STRING)
+        self.combobox_property = self.builder.get_object('combobox_property')
+        self.combobox_property.set_model(self.liststore_property)
+        cell = gtk.CellRendererText()
+        self.combobox_property.pack_start(cell, True)
+        self.combobox_property.add_attribute(cell, 'text', 0)
+        self.combobox_property.append_text('biomass')
+        self.combobox_property.append_text('density')
+        self.combobox_property.set_active(0)
+
+        # Set the default value for the 'round' spinbutton.
+        self.builder.get_object('adjustment_round').set_value(-1)
+
+    def on_window_destroy(self, widget, data=None):
+        gtk.main_quit()
+
+    def on_button_start_clicked(self, widget, data=None):
+        # Get some values from the GUI.
+        input_file = self.chooser_input_file.get_filename()
+        output_folder = self.builder.get_object('chooser_output_folder').get_filename()
+
+        # Check if the input file and output folder are set.
+        if not input_file:
+            self.show_message(title="No data file set",
+                message="You didn't select the data file. Please select the data file first.",
+                type=gtk.MESSAGE_ERROR)
+            return
+
+        # Get all values from the GUI.
+        delimiter = self.builder.get_object('input_delimiter').get_text()
+        quotechar = self.builder.get_object('input_quotechar').get_text()
+        active = self.combobox_property.get_active()
+        property = self.liststore_property[active][0]
+        round_to = "%d" % self.builder.get_object('spinbutton_round').get_value()
+
+        # Create a CSV reader for the input file.
+        reader = csv.DictReader(open(input_file), fieldnames=None,
+            delimiter=delimiter, quotechar=quotechar)
+
+        # Show the progress dialog.
+        self.pd = ProgressDialog()
+
+        # Set up the data processor.
+        t = DataProcessor()
+        t.set_csv_reader(reader)
+        t.set_property(property)
+        t.set_output_folder(output_folder)
+        t.set_progress_dialog(self.pd)
+
+        # Set the 'round' if 'round_to' set to 0 or higher.
+        if int(round_to) >= 0:
+            t.set_round(round_to)
+
+        # Start processing the data.
+        t.start()
+
+    def on_process_finished(self, sender):
+        """Show a message dialog showing that the process was finished."""
+        output_folder = self.builder.get_object('chooser_output_folder').get_filename()
+
+        message_finished = self.show_message("Finished!",
+            "The data was successfully processed. The output files "
+            "have been saved to %s" % output_folder)
+
+    def on_load_data_failed(self, sender):
+        """Show a error dialog showing that loading the data has failed."""
+
+        # Close the progress dialog.
+        self.pd.dialog.destroy()
+
+        message_finished = self.show_message("Loading data failed!",
+            "The data could not be loaded. This is probably caused by "
+            "an incorrect input file or the CSV file was in a different "
+            "format. If the CSV file was in a different format, "
+            "change the settings under Advanced Options accrodingly "
+            "and make sure the format matches the format described in the "
+            "manual.",
+            type=gtk.MESSAGE_ERROR)
+
+    def show_message(self, title, message, type=gtk.MESSAGE_INFO):
+        """Show a message dialog showing that input file was not set."""
+        dialog = gtk.MessageDialog(parent=None, flags=0,
+            type=type,
+            buttons=gtk.BUTTONS_OK,
+            message_format=title)
+        dialog.format_secondary_text(message)
+
+        response = dialog.run()
+        dialog.destroy()
+
+    def on_about(self, widget, data=None):
+        builder = gtk.Builder()
+        builder.add_from_file('about.glade')
+
+        about = builder.get_object('about_dialog')
+        about.set_version(__version__)
+        about.run()
+        about.destroy()
+
+    def on_help(button, section):
+        """Display the help contents in the system's default web
+        browser.
+        """
+
+        # Construct the path to the help file.
+        path = os.path.abspath(os.path.join('.','docs','user-manual.html'))
+
+        # Turn the path into an URL.
+        if path.startswith('/'):
+            url = 'file://'+path
+        else:
+            url = 'file:///'+path
+
+        # Open the URL in the system's web browser.
+        webbrowser.open(url)
+
+class DataProcessor(threading.Thread):
+    def __init__(self):
+        super(DataProcessor, self).__init__()
+
         self.reader = None
+        self.output_folder = None
+        self.property = None
+        self.dbfile = None
+        self.do_round = None
+        self.pdialog = None
+
         self.ecotopes = []
         self.taxa = []
-        self.do_round = None
+        self.representative_groups = {}
         self.properties = {'density': 'sum_of_density',
             'biomass': 'sum_of_biomass'}
-        self.property = None
-        self.representative_groups = {}
 
         # Set the path to the database file.
         self.set_directives()
@@ -172,11 +275,167 @@ class DataProcessor(object):
         if not os.path.exists(data_path):
             os.makedirs(data_path)
 
+        # Set the path to the database file.
         self.dbfile = os.path.join(data_path, 'data.sqlite')
+
+    def set_progress_dialog(self, pdialog):
+        self.pdialog = pdialog
+
+    def set_property(self, property):
+        if property in self.properties:
+            self.property = property
+        else:
+            raise ValueError("Property can be either 'density' or "
+                "'biomass', not '%s'." % property)
+
+    def set_output_folder(self, output_folder):
+        if not os.path.exists(output_folder):
+            raise ValueError("Output folder does not exist.")
+        self.output_folder = output_folder
+
+    def set_round(self, round_to):
+        if not isinstance(round_to, int) or round_to < 0:
+            raise ValueError("Argument 'round_to' must be an integer >= 0.")
+        self.do_round = round_to
 
     def set_csv_reader(self, reader):
         """Set the CSV reader."""
-        self.reader = reader
+        if isinstance(reader, csv.DictReader):
+            self.reader = reader
+        else:
+            raise TypeError("Argument 'reader' must be an instance of 'csv.DictReader'.")
+
+    def update_progress_dialog(self, fraction, action=None, autoclose=True):
+        """Set the progress dialog's progressbar fraction to ``fraction``.
+        The value of `fraction` should be between 0.0 and 1.0. Optionally set
+        the current action to `action`, a short string explaining the current
+        action. Optionally set `autoclose` to automatically close the
+        progress dialog if `fraction` equals ``1.0``.
+        """
+        # If no progress dialog is set, do nothing.
+        if not self.pdialog:
+            return
+
+        # This is always called from a separate thread, so we must use
+        # gobject.idle_add to access the GUI.
+        gobject.idle_add(self.on_update_progress_dialog, fraction, action, autoclose)
+
+    def on_close_progress_dialog(self, delay=0):
+        """Close the progress dialog. Optionally set a delay of `delay`
+        seconds before it's being closed.
+        """
+
+        # If a delay is set, sleep 'delay' seconds.
+        if delay: time.sleep(delay)
+
+        # Close the dialog.
+        self.pdialog.dialog.destroy()
+
+        # This callback function must return False, so it is
+        # automatically removed from the list of event sources.
+        return False
+
+    def on_update_progress_dialog(self, fraction, action=None, autoclose=True):
+        """Set the progress dialog's progressbar fraction to ``fraction``.
+        The value of `fraction` should be between 0.0 and 1.0. Optionally set
+        the current action to `action`, a short string explaining the current
+        action. Optionally set `autoclose` to automatically close the
+        progress dialog if `fraction` equals ``1.0``.
+        """
+
+        # Update fraction.
+        self.pdialog.pbar.set_fraction(fraction)
+
+        # Set percentage text for the progress bar.
+        percent = fraction * 100.0
+        self.pdialog.pbar.set_text("%.0f%%" % percent)
+
+        # Show the current action below the progress bar.
+        if isinstance(action, str):
+            action = "<span style='italic'>%s</span>" % (action)
+            self.pdialog.label_action.set_markup(action)
+
+        if fraction == 1.0:
+            self.pdialog.pbar.set_text("Finished!")
+
+            if autoclose:
+                # Close the progress dialog when finished. We set a delay
+                # of 1 second before closing it.
+
+                # This is always called from a separate thread, so we must
+                # use gobject.idle_add to access the GUI.
+                gobject.idle_add(self.on_close_progress_dialog, 1)
+
+        # This callback function must return False, so it is
+        # automatically removed from the list of event sources.
+        return False
+
+    def run(self):
+        progress_steps = 7.0
+
+        # Check if all required settings are set.
+        self.check_settings()
+
+        self.update_progress_dialog(1/progress_steps,
+            "Loading data..."
+            )
+
+        # Load the data.
+        try:
+            self.load_data()
+        except:
+            # Emit the signal that the process has failed.
+            gobject.idle_add(sender.emit, 'load-data-failed')
+            return
+
+        self.update_progress_dialog(2/progress_steps,
+            "Making sample groups..."
+            )
+
+        # Process data for the property.
+        self.process()
+
+        self.update_progress_dialog(3/progress_steps,
+            "Exporting transponed data..."
+            )
+
+        # Export the results.
+        self.export_ecotopes_transponed()
+
+        self.update_progress_dialog(4/progress_steps,
+            "Exporting raw ecotope data..."
+            )
+
+        self.export_ecotopes('raw')
+
+        self.update_progress_dialog(5/progress_steps,
+            "Exporting normalized ecotope data..."
+            )
+
+        self.export_ecotopes('normalized')
+
+        self.update_progress_dialog(6/progress_steps,
+            "Exporting representative sample groups..."
+            )
+
+        self.export_representatives()
+
+        self.update_progress_dialog(7/progress_steps, "")
+
+        # Emit the signal that the process was successful.
+        gobject.idle_add(sender.emit, 'process-finished')
+
+    def check_settings(self):
+        if not self.reader:
+            raise ValueError("Attribute 'reader' has not been set.")
+        if not self.dbfile:
+            raise ValueError("Attribute 'dbfile' has not been set.")
+        if not self.property:
+            raise ValueError("Attribute 'property' has not been set.")
+        if not self.output_folder:
+            raise ValueError("Attribute 'output_folder' has not been set.")
+
+        return True
 
     def load_data(self):
         """Extract the required columns from the CSV data and insert
@@ -187,16 +446,15 @@ class DataProcessor(object):
         # Create a new database file.
         self.make_db()
 
-        # The order in which the columns occur in the database 'data'
-        # table.
-        fields = ['Sample code', 'Compiled ecotope',
-            'Standardised Taxon', 'SumOfDensity', 'SumOfBiomass',
-            'Sample surface']
+        # The column names.
+        fields = ['sample code', 'compiled ecotope',
+            'standardised taxon', 'density', 'biomass',
+            'sample surface']
 
-        # Alter the above field names to match the ones in the CSV file.
+        # Alter the above column names to match the ones in the CSV file.
         for i,f in enumerate(fields):
             for name in self.reader.fieldnames:
-                if f in name:
+                if f in name.lower():
                     fields[i] = name
                     break
 
@@ -204,12 +462,13 @@ class DataProcessor(object):
         connection = sqlite.connect(self.dbfile)
         cursor = connection.cursor()
 
-        # List of sample codes.
+        # List of sample codes. Used to check which sample codes have
+        # already been inserted into the database.
         sample_codes = []
 
         # Insert CSV data into database.
         for row in self.reader:
-            sample_code = row[fields[0]]
+            sample_code = int(row[fields[0]])
 
             # Insert the data into the 'data' table.
             cursor.execute("INSERT INTO data VALUES (null,?,?,?,?,?)",
@@ -302,7 +561,7 @@ class DataProcessor(object):
     def remove_db_file(self, tries=0):
         """Remove the database file."""
         if tries > 2:
-            raise EnvironmentError("I was unable to remove the file %s. "
+            raise EnvironmentError("Unable to remove the file %s. "
                 "Please make sure it's not in use by a different "
                 "process." % self.dbfile)
         try:
@@ -313,19 +572,14 @@ class DataProcessor(object):
             self.remove_db_file(tries)
         return True
 
-    def process(self, property):
+    def process(self):
         """Calculate the sample groups with a sample surface of 0.2
         and save them to the database.
         """
-        logging.info("Processing data for property '%s'..." % property)
+        logging.info("Processing data for property '%s'..." % self.property)
 
-        # Get the table names from which to select data from the
-        # database based on 'property'.
-        if property in self.properties:
-            self.property = property
-            self.select_field = self.properties[property]
-        else:
-            raise ValueError("Value of 'property' must be either 'density' or 'biomass'.")
+        # Set the field to select from based on the property.
+        self.select_field = self.properties[self.property]
 
         # This will automatically create a new database file.
         connection = sqlite.connect(self.dbfile)
@@ -818,7 +1072,7 @@ class DataProcessor(object):
         cursor.close()
         connection.close()
 
-    def export_ecotopes(self, output_folder, data='raw'):
+    def export_ecotopes(self, data='raw'):
         for ecotope in self.ecotopes:
             # Create a CSV generator.
             csvgen = self.generate_csv_ecotope(ecotope, data)
@@ -830,13 +1084,13 @@ class DataProcessor(object):
                 prefix = 'ambi'
             suffix = ecotope.replace(" ", "_")
             filename = "%s_%s_%s.csv" % (prefix, self.property, suffix)
-            output_file = os.path.join(output_folder, filename)
+            output_file = os.path.join(self.output_folder, filename)
 
             # Export data.
             logging.info("Saving %s sample groups of ecotope '%s' to %s" % (data, ecotope, output_file))
             self.export_csv(output_file, csvgen)
 
-    def export_ecotopes_transponed(self, output_folder):
+    def export_ecotopes_transponed(self):
         for ecotope in self.ecotopes:
             # Create a CSV generator.
             csvgen = self.generate_csv_ecotope_transponed(ecotope)
@@ -844,18 +1098,18 @@ class DataProcessor(object):
             # Construct a filename.
             suffix = ecotope.replace(" ", "_")
             filename = "transponed_%s_%s.csv" % (self.property, suffix)
-            output_file = os.path.join(output_folder, filename)
+            output_file = os.path.join(self.output_folder, filename)
 
             # Export data.
             logging.info("Saving transponed data of ecotope '%s' to %s" % (ecotope, output_file))
             self.export_csv(output_file, csvgen)
 
-    def export_representatives(self, output_folder):
+    def export_representatives(self):
         # Create a CSV generator.
         csvgen = self.generate_csv_representatives()
 
         filename = "representatives_%s.csv" % (self.property)
-        output_file = os.path.join(output_folder, filename)
+        output_file = os.path.join(self.output_folder, filename)
 
         # Export data.
         logging.info("Saving representative sample groups to %s" % (output_file))
@@ -867,7 +1121,8 @@ class DataProcessor(object):
             quoting=csv.QUOTE_MINIMAL)
         writer.writerows(data_generator)
 
-if __name__ == "__main__":
-    main(sys.argv[1:])
-
-sys.exit()
+if __name__ == '__main__':
+    sender = Sender()
+    app = MainWindow()
+    gtk.main()
+    sys.exit(0)

@@ -9,45 +9,42 @@
     <div id='content'>
         <h1>Welcome to bioden's Documentation</h1>
 
-        <div class="section" id="using-bioden">
-            <h2>Using bioden <a class="headerlink" href="#using-bioden">&para;</a></h2>
-            <p>
-            Bioden (<code>bioden.py</code>) is a command-line interface
-            (CLI) application. This means that you can run it from
-            the command line (the "terminal" on UNIX systems or "DOS" on
-            Windows systems). Bioden also comes with a graphical
-            frontend (<code>bioden-gtk.pyw</code>), which is probably
-            more suitable for Windows users. Skip to the
-            <a class="headerlink" href="#using-gui">GUI section</a> for
-            help on using the frontend, or go to the
-            <a class="headerlink" href="#using-cli">CLI section</a> for
-            help on running bioden from the command-line.
-            </p>
+        <div class="section" id="intro">
+            <h2>Introduction <a class="headerlink" href="#intro">&para;</a></h2>
+        </div>
+        <div>
+            <p>Bioden is a data normalizer and transponer for CSV files
+            containing taxon biomass/density data for ecotopes.</p>
         </div>
 
-        <div class="section" id="using-gui">
-            <h2>Using bioden (GUI) <a class="headerlink" href="#using-gui">&para;</a></h2>
-            <p>
-            Start bioden by running <code>bioden-gtk.pyw</code>. This
-            can be done by (double) clicking it. Note that <code>bioden.py</code>
-            and <code>bioden-gtk.pyw</code> must be in the same folder.
-            </p>
-            <p>
-            Once bioden is started, you'll be presented with its main
-            window. The window has the following elements:
-            </p>
+        <div class="section" id="using-bioden">
+            <h2>Using Bioden<a class="headerlink" href="#using-bioden">&para;</a></h2>
+        </div>
+        <div>
+            <p>Start bioden by running <code>bioden.pyw</code>. This
+            can be done by (double) clicking it.</p>
+
+            <p>Once bioden is started, you'll be presented with its main
+            window. The main window has the following components:</p>
+
             <dl>
-                <dt>Select data file</dt>
+                <dt>Select input data file</dt>
                 <dd>The CSV file containing the biomass and density
-                data to be normalized.</dd>
+                data to be processed. This file must be in a specific
+                format. This format is described in the
+                <a class="headerlink" href="#input-file-format">Input
+                File Format</a> section.</dd>
 
                 <dt>Select output folder</dt>
                 <dd>Select the folder to which all output files should
-                be saved.</dd>
+                be saved. The output file are described in the
+                <a class="headerlink" href="#output">Output Files</a>
+                section.</dd>
 
                 <dt>Property for calculations</dt>
                 <dd>The property to perform the calculations on. Can
-                be either 'biomass' or 'density'.</dd>
+                be either 'biomass' or 'density'. Note that the input
+                data file must have the specified property stored.</dd>
 
                 <dt>Advanced Options</dt>
                 <dd>Clicking this toggle button shows/hides the
@@ -56,10 +53,10 @@
                 <dt>Field delimiter of the input file:</dt>
                 <dd>A one-character string used to separate fields in
                 the input CSV file. It defaults to a semicolon (;).
-                By default Excel uses the semicolon to export CSV file.
+                By default Excel uses the semicolon for CSV files.
                 If the CSV file is exported by a different application,
                 make sure this character matches the delimiter in the
-                data file. You can check this simply by opening the
+                data file. You can check this by opening the
                 data file in a text editor (like Notepad).</dd>
 
                 <dt>Quote character of the input file:</dt>
@@ -67,11 +64,11 @@
                 the input CSV file. It defaults to a double quote (").</dd>
 
                 <dt>Round values to n decimals:</dt>
-                <dd>Number of decimals to round values to in the output
-                files. Value "-1" (default) means do not round.</dd>
+                <dd>Number of decimals to round values in the output
+                files to. Value "-1" (default) means do not round.</dd>
 
                 <dt>Process Data</dt>
-                <dd>Clicking the button starts the data processing.
+                <dd>Clicking this button starts the data processing.
                 While it's processing the data, a progress dialog is
                 displayed. Be patient, the calculations could take some
                 time to finish based on the amount of data in the data
@@ -79,115 +76,209 @@
             </dl>
         </div>
 
-        <div class="section" id="using-cli">
-            <h2>Using bioden (CLI) <a class="headerlink" href="#using-cli">&para;</a></h2>
-            <p>
-            Start your terminal application and move to the folder
-            containing <code>bioden.py</code>. Then type the following
-            command to execute bioden: <code>./bioden.py</code>
-            </p>
-            <p>
-            Running bioden like that (without arguments) will display
-            its usage information in the terminal.
+        <div class="section" id="input-file-format">
+            <h2>Input File Format <a class="headerlink" href="#input-file-format">&para;</a></h2>
+        </div>
+        <div>
+            <p>The input data file must be a CSV file in a specific
+            format. The default settings for Bioden have been set for
+            the format in which Excel creates CSV files. This means that
+            by default Bioden expects a semicolon (;) as a field
+            separator. The quote character defaults to a double quote (").
+            The Advanced Options in Bioden allow you to change these defaults,
+            should your input CSV file use a different field delimiter
+            or quotechar.</p>
+
+            <p>Except for the CSV format, Bioden also expects a format
+            in which the data has been stored in the CSV file. Bioden
+            expects the following content format:</p>
+
+            <ol>
+                <li>The first line in the CSV file must be the header.
+                The header contains the column names. Bioden expects
+                at least the following six columns: "compiled ecotope",
+                "sample code", "standardised taxon", "density",
+                "biomass", and "sample surface".</li>
+
+                <li>Bioden isn't very strict with the column names. The
+                column names aren't case sensitive. So a column with
+                name "BiOmAsS" works just as good. Also Bioden uses any
+                column that <i>contains</i> any of the expected
+                column names. So a column with name "Sum Of Density"
+                would be used as the "density" column, because it
+                contains the string "density".</li>
+
+                <li>Bioden ignores the columns that don't match
+                the expected column names. So it's OK if the input file
+                contains other columns.</li>
+
+                <li>The header line must be followed by the data lines.</li>
+
+                <li>Bioden automatically corrects numbers that have been
+                stored in non-English format. This means that commas
+                are replaced by dots (e.g. <code>12,5</code> will be
+                converted to <code>12.5</code>).</li>
+            </ol>
+
+            <p>Below is an example of an input data file in CSV format
+            with a header containing all required columns:</p>
+
             <pre>
-serrano@saibot:~$ ./bioden.py
-bioden 0.1
-
-Usage: bioden.py [options] -i [input_file] -o [output_folder]
-
-Options:
-   -h,--help                     Show this usage information.
-   -i [input_file]               Input CSV file (*.csv).
-   -o [output_folder]            Folder to save the output files in.
-   -d,--delimiter "[char]"       A one-character string used to
-                                 separate fields. It defaults to ';'.
-   -q,--quotechar "[char]"       A one-character string used to quote
-                                 fields containing special characters.
-                                 It defaults to '"'.
-   -p,--property [property]      The property on which to perform the
-                                 calculations. Can be either 'biomass'
-                                 (default) or 'density'.
-   -r,--round [n]                Round values to [n] decimals. Default
-                                 is not to round.
-
-            </pre>
-            The usage information
-            should be straightforward. Here is a simple usage example:
-            <br/>
-            <code>./bioden.py -i input.csv -o data/ -p biomass</code>
-            </p>
-            <p>
-            The output for that command should look something like this:
-            <pre>
-serrano@saibot:~$ ./bioden.py -i input.csv -o data/ -p biomass
-INFO Loading data...
-INFO Processing data for property 'biomass'...
-INFO Processing ecotope 'Polyhaline_Subtidal_Sand'...
-INFO Processing ecotope 'Polyhaline_Intertidal_mud'...
-INFO Processing ecotope 'Polyhaline_Subtidal_Mud'...
-INFO Processing ecotope 'Polyhaline_Intertidal_Sand'...
-INFO Processing ecotope 'Polyhaline_Intertidal_Mud'...
-INFO Processing ecotope 'Mesohaline_Subtidal_Sand'...
-INFO Processing ecotope 'Mesohaline_Intertidal_Mud'...
-INFO Processing ecotope 'Mesohaline_Intertidal_Sand'...
-INFO Processing ecotope 'Mesohaline_Subtidal_Mud'...
-INFO Saving transponed data of ecotope 'Polyhaline_Subtidal_Sand' to data/transponed_biomass_Polyhaline_Subtidal_Sand.csv
-INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_mud' to data/transponed_biomass_Polyhaline_Intertidal_mud.csv
-INFO Saving transponed data of ecotope 'Polyhaline_Subtidal_Mud' to data/transponed_biomass_Polyhaline_Subtidal_Mud.csv
-INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_Sand' to data/transponed_biomass_Polyhaline_Intertidal_Sand.csv
-INFO Saving transponed data of ecotope 'Polyhaline_Intertidal_Mud' to data/transponed_biomass_Polyhaline_Intertidal_Mud.csv
-INFO Saving transponed data of ecotope 'Mesohaline_Subtidal_Sand' to data/transponed_biomass_Mesohaline_Subtidal_Sand.csv
-INFO Saving transponed data of ecotope 'Mesohaline_Intertidal_Mud' to data/transponed_biomass_Mesohaline_Intertidal_Mud.csv
-INFO Saving transponed data of ecotope 'Mesohaline_Intertidal_Sand' to data/transponed_biomass_Mesohaline_Intertidal_Sand.csv
-INFO Saving transponed data of ecotope 'Mesohaline_Subtidal_Mud' to data/transponed_biomass_Mesohaline_Subtidal_Mud.csv
-INFO Saving raw groups of ecotope 'Polyhaline_Subtidal_Sand' to data/raw_biomass_Polyhaline_Subtidal_Sand.csv
-INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_mud' to data/raw_biomass_Polyhaline_Intertidal_mud.csv
-INFO Saving raw groups of ecotope 'Polyhaline_Subtidal_Mud' to data/raw_biomass_Polyhaline_Subtidal_Mud.csv
-INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_Sand' to data/raw_biomass_Polyhaline_Intertidal_Sand.csv
-INFO Saving raw groups of ecotope 'Polyhaline_Intertidal_Mud' to data/raw_biomass_Polyhaline_Intertidal_Mud.csv
-INFO Saving raw groups of ecotope 'Mesohaline_Subtidal_Sand' to data/raw_biomass_Mesohaline_Subtidal_Sand.csv
-INFO Saving raw groups of ecotope 'Mesohaline_Intertidal_Mud' to data/raw_biomass_Mesohaline_Intertidal_Mud.csv
-INFO Saving raw groups of ecotope 'Mesohaline_Intertidal_Sand' to data/raw_biomass_Mesohaline_Intertidal_Sand.csv
-INFO Saving raw groups of ecotope 'Mesohaline_Subtidal_Mud' to data/raw_biomass_Mesohaline_Subtidal_Mud.csv
-INFO Saving normalized groups of ecotope 'Polyhaline_Subtidal_Sand' to data/ambi_biomass_Polyhaline_Subtidal_Sand.csv
-INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_mud' to data/ambi_biomass_Polyhaline_Intertidal_mud.csv
-INFO Saving normalized groups of ecotope 'Polyhaline_Subtidal_Mud' to data/ambi_biomass_Polyhaline_Subtidal_Mud.csv
-INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_Sand' to data/ambi_biomass_Polyhaline_Intertidal_Sand.csv
-INFO Saving normalized groups of ecotope 'Polyhaline_Intertidal_Mud' to data/ambi_biomass_Polyhaline_Intertidal_Mud.csv
-INFO Saving normalized groups of ecotope 'Mesohaline_Subtidal_Sand' to data/ambi_biomass_Mesohaline_Subtidal_Sand.csv
-INFO Saving normalized groups of ecotope 'Mesohaline_Intertidal_Mud' to data/ambi_biomass_Mesohaline_Intertidal_Mud.csv
-INFO Saving normalized groups of ecotope 'Mesohaline_Intertidal_Sand' to data/ambi_biomass_Mesohaline_Intertidal_Sand.csv
-INFO Saving normalized groups of ecotope 'Mesohaline_Subtidal_Mud' to data/ambi_biomass_Mesohaline_Subtidal_Mud.csv
-INFO Saving representative groups to data/representatives_biomass.csv
-INFO done.
+"compiled ecotope";"sample code";"standardised taxon";"density";"biomass";"sample surface"
+"Polyhaline_Subtidal_Sand";"1971";"Abludomelita obtusata";200;0.02558;0.015
+"Polyhaline_Subtidal_Sand";"2209";"Abludomelita obtusata";66.67;0.01838;0.015
+"Polyhaline_Subtidal_Sand";"2211";"Abludomelita obtusata";600;0.15587;0.015
+"Polyhaline_Subtidal_Sand";"3393";"Abludomelita obtusata";66.67;0.02238;0.015
+"Polyhaline_Intertidal_mud";"49";"Abra alba";22.66;0.1427;0.0149
+"Polyhaline_Subtidal_Sand";"81";"Abra alba";66.67;0.05333;0.015
+"Polyhaline_Subtidal_Sand";"84";"Abra alba";200.01;0.19999;0.015
+"Polyhaline_Subtidal_Sand";"87";"Abra alba";1666.67;4.46666;0.015
+"Polyhaline_Subtidal_Sand";"88";"Abra alba";66.67;0.3;0.015
+"Polyhaline_Subtidal_Mud";"59";"Abra alba";200;0.23333;0.015
+"Polyhaline_Subtidal_Mud";"76";"Abra alba";66.67;0.14;0.015
+"Polyhaline_Intertidal_Sand";"290";"Abra alba";11.33;0.09117;0.0149
+"Polyhaline_Intertidal_Mud";"285";"Abra alba";202.02;0.14218;0.0149
+"Polyhaline_Intertidal_Mud";"538";"Abra alba";133.33;0.0868;0.015
+"Polyhaline_Intertidal_Mud";"1973";"Abra alba";133.33;0.30667;0.015
+"Polyhaline_Subtidal_Sand";"2209";"Abra alba";3000;1.1379;0.015
+"Polyhaline_Subtidal_Sand";"2210";"Abra alba";66.67;0.026;0.015
+"Polyhaline_Subtidal_Sand";"2211";"Abra alba";66.67;0.026;0.015
+"Polyhaline_Subtidal_Sand";"2443";"Abra alba";66.67;0.07921;0.015
+"Polyhaline_Subtidal_Mud";"2484";"Abra alba";66.67;0.00384;0.015
+"Polyhaline_Intertidal_Sand";"2975";"Abra alba";66.67;0.03878;0.015
+"Polyhaline_Intertidal_Sand";"3245";"Abra alba";66.67;0.0056;0.015
+"Polyhaline_Intertidal_Mud";"3166";"Abra alba";133.33;0.00173;0.015
+"Polyhaline_Subtidal_Sand";"3614";"Abra alba";66.67;0.04703;0.015
             </pre>
             </p>
         </div>
 
         <div class="section" id="output">
-            <h2>Output <a class="headerlink" href="#output">&para;</a></h2>
-            <p>
-            Bioden creates different files in the specified output
-            folder.
-            </p>
+            <h2>Output Files <a class="headerlink" href="#output">&para;</a></h2>
+        </div>
+        <div>
+            <p>Bioden produces several output files in the specified output
+            folder. All output files are saved in CSV format, and can
+            thus be opened with any spreadsheet application (e.g.
+            Microsoft Excel, OpenOffice.org Calc).
+            The output files are described below:</p>
+
             <dl>
-                <dt>Transponed data files (<code>transponed_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
-                <dd>These files contain the raw data, but the data has
-                transponed (=moved). The first column in the file shows
-                a list of all taxa. Each row is a specific sample indicated
-                with the sample code. Each data row contains the biomass/density
-                for that taxa and sample code.</dd>
+                <dt>Transponed ecotope files (<code>transponed_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>The original data is split by ecotope. So one data
+                file per ecotope is exported. The un-processed values are
+                exported, but the data has been transponed.<br />
+                Each column is a sample, and each row contains the values
+                for a taxon. Example output:
+                <pre>
+Property:,biomass
+Ecotope:,Mesohaline_Subtidal_Mud
+Sample code:,121,362,587,617,2269,2508,2509,2510,2521,2752,2756,2761,2989,3230,3231,3688,3700,3709,5883,5904,5921,7643,7650,7667,7674,7689,7731,7851,7868,7875,7892,7899,7915,7922,7939,7946
+Sample surface:,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.0624,0.015,0.015,0.015,0.015,0.015,0.022266038,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.105,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469
+""
+Abludomelita obtusata,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Abra alba,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Abra nitida,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Abra tenuis,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Achelia echinata,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Achelia longipes,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Alitta succinea,,,,,1.30907,,,,,,,,,,,,,,,,,,,,0.0019,0.0015333,,0.0008,,,,,,,,
+Alitta virens,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+AMPHIPODA,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+                </pre>
+                </dd>
 
-                <dt>RAW data files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
-                <dd>TODO</dd>
+                <dt>RAW group files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>One data file per ecotope is exported. Each file
+                contains the calculated sample groups for that ecotope.
+                Sample groups were created by summing samples for
+                that ecotope until the sum of the sample surfaces
+                reached 0.2 or higher. The groups have <i>not</i>
+                been corrected to a surface of 0.2.<br />
+                Each column is a sample group, and each row contains
+                the values for a taxon. Example output:
+                <pre>
+Property:,biomass
+Ecotope:,Mesohaline_Intertidal_Mud
+Sample group:,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
+Group surface:,0.2092,0.21,0.2004,0.21465,0.21465,0.21465,0.21465,0.21465,0.229690148,0.307121112,0.24,0.24,0.208346497,0.212234218,0.214708221,0.214708221,0.214708221,0.214708221
+""
+Abludomelita obtusata,,,,,,,,,,,,,,,,,,
+Abra alba,,,,,,,,,,,,,,,,,,
+Abra nitida,,,,,,,,,,,,,,,,,,
+Abra tenuis,,,,,,,,,,,,,,,,,,
+Achelia echinata,,,,,,,,,,,,,,,,,,
+Achelia longipes,,,,,,,,,,,,,,,,,,
+Alitta succinea,1.250968217,0.13219,0.542735707,1.653383108,0.311059262,0.36929538,0.018758749,0.006626225,0.103873075,0.0758,0.0545,0.067,,,0.0173333,0.0358,0.0006,
+Alitta virens,,,,,,,,,,,,,,,,,,
+AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
+                </pre></dd>
 
-                <dt>AMBI data files (<code>ambi_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
-                <dd>TODO</dd>
+                <dt>AMBI group files (<code>ambi_&lt;biomass&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>One data file per ecotope is exported. Each file
+                contains the calculated sample groups for that ecotope.
+                Sample groups were created by summing samples for
+                that ecotope until the sum of the sample surfaces
+                reached 0.2 or higher. The groups <i>have</i>
+                been corrected to a surface of 0.2. This means that
+                each sample group has a surface of exactly 0.2.<br />
+                Each column is a sample group, and each row contains
+                the values for a taxon. Example output:
+                <pre>
+Property:,biomass
+Ecotope:,Mesohaline_Intertidal_Mud
+Sample group:,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
+Group surface:,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
+""
+Abludomelita obtusata,,,,,,,,,,,,,,,,,,
+Abra alba,,,,,,,,,,,,,,,,,,
+Abra nitida,,,,,,,,,,,,,,,,,,
+Abra tenuis,,,,,,,,,,,,,,,,,,
+Achelia echinata,,,,,,,,,,,,,,,,,,
+Achelia longipes,,,,,,,,,,,,,,,,,,
+Alitta succinea,1.19595431836,0.125895238095,0.541652402196,1.54053865176,0.289829268111,0.344090733753,0.0174784523643,0.00617398089914,0.0904462606729,0.0493616342468,0.0454166666667,0.0558333333333,,,0.0161459118047,0.0333475819727,0.000558898021888,
+Alitta virens,,,,,,,,,,,,,,,,,,
+AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
+                </pre></dd>
 
                 <dt>Representatives data file (<code>representatives_&lt;property&gt;.csv</code>)</dt>
-                <dd>TODO</dd>
+                <dd>One data file is exported. The file contains
+                one normalized sample group for each ecotope. The
+                sample group that represents the ecotope best is
+                exported.<br />
+                Each column is a best representative sample group for
+                an ecotope, and each row contains the values for a
+                taxon. Example output:
+                <pre>
+Property:,biomass
+Ecotope:,Polyhaline_Subtidal_Sand,Polyhaline_Intertidal_mud,Polyhaline_Subtidal_Mud,Polyhaline_Intertidal_Sand,Polyhaline_Intertidal_Mud,Mesohaline_Subtidal_Sand,Mesohaline_Intertidal_Mud,Mesohaline_Intertidal_Sand,Mesohaline_Subtidal_Mud
+Group surface:,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
+""
+Abludomelita obtusata,,,,,,,,,
+Abra alba,,0.136164122137,,,,,,,
+Abra nitida,,,,,,,,,
+Abra tenuis,,,,,,,,,
+Achelia echinata,,,,,,,,,
+Achelia longipes,,,,,,,,,
+Alitta succinea,,0.357881604962,,3.04135238095,1.83871583788,0.104833333333,0.344090733753,1.59527619048,1.08009075908
+Alitta virens,,,,,,,,,
+AMPHIPODA,,,,,,,,,
+Amphitrite,,,,,,,,,
+Anaitides,,,,,,,,,
+Anaitides mucosa,,,0.0,,1.89436169672,,,,
+Angulus tenuis,,,,,,,,,
+Anoplodactylus petiolatus,,,,,,,,,
+Anoplodactylus pygmaeus,,,,,,,,,
+Antinoella finmarchica,,,,,,,,,
+Aphelochaeta marioni,0.00168571428571,7.99658396947,0.0,0.636476190476,1.44548118612,,,,
+Apocorophium lacustre,,,,,,,,,0.432640264026
+Arenicola,,,,,,,,,
+Arenicola defodiens,,,,,,,,,
+Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
+                </pre></dd>
             </dl>
         </div>
+
     </div>
 </body>
 </html>
