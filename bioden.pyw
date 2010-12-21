@@ -411,13 +411,13 @@ class DataProcessor(threading.Thread):
         self.export_ecotopes_transponed()
 
         self.update_progress_dialog(4/progress_steps,
-            "Exporting raw ecotope data..."
+            "Exporting raw ecotope groups..."
             )
 
         self.export_ecotopes('raw')
 
         self.update_progress_dialog(5/progress_steps,
-            "Exporting normalized ecotope data..."
+            "Exporting normalized ecotope groups..."
             )
 
         self.export_ecotopes('normalized')

@@ -21,8 +21,11 @@
             <h2>Using Bioden<a class="headerlink" href="#using-bioden">&para;</a></h2>
         </div>
         <div>
-            <p>Start bioden by running <code>bioden.pyw</code>. This
-            can be done by (double) clicking it.</p>
+            <p>On Windows, go to Start menu > All Programs > GiMaRIS >
+            bioden > bioden.</p>
+
+            <p>Linux users can just run <code>bioden.pyw</code> after
+            unpacking the archive.</p>
 
             <p>Once bioden is started, you'll be presented with its main
             window. The main window has the following components:</p>
@@ -158,18 +161,23 @@
         </div>
         <div>
             <p>Bioden produces several output files in the specified output
-            folder. All output files are saved in CSV format, and can
-            thus be opened with any spreadsheet application (e.g.
-            Microsoft Excel, OpenOffice.org Calc).
-            The output files are described below:</p>
+            folder. All output files are saved in CSV (Comma Separated
+            Values) format, and can be opened with any spreadsheet
+            application (e.g. Microsoft Excel, OpenOffice.org Calc
+            <a class="headerlink" href="#viewing-output-files">&para;</a>).</p>
+
+            <p>The output files are described below:</p>
 
             <dl>
                 <dt>Transponed ecotope files (<code>transponed_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
                 <dd>The original data is split by ecotope. So one data
                 file per ecotope is exported. The un-processed values are
-                exported, but the data has been transponed.<br />
+                exported, but the data has been transponed/re-ordered.
+                <br />
                 Each column is a sample, and each row contains the values
-                for a taxon. Example output:
+                for a taxon.
+                <br />
+                Example output:
                 <pre>
 Property:,biomass
 Ecotope:,Mesohaline_Subtidal_Mud
@@ -194,9 +202,12 @@ AMPHIPODA,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                 Sample groups were created by summing samples for
                 that ecotope until the sum of the sample surfaces
                 reached 0.2 or higher. The groups have <i>not</i>
-                been corrected to a surface of 0.2.<br />
+                been corrected to a surface of 0.2.
+                <br />
                 Each column is a sample group, and each row contains
-                the values for a taxon. Example output:
+                the values for a taxon.
+                <br />
+                Example output:
                 <pre>
 Property:,biomass
 Ecotope:,Mesohaline_Intertidal_Mud
@@ -221,9 +232,12 @@ AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
                 that ecotope until the sum of the sample surfaces
                 reached 0.2 or higher. The groups <i>have</i>
                 been corrected to a surface of 0.2. This means that
-                each sample group has a surface of exactly 0.2.<br />
+                each sample group has a surface of exactly 0.2.
+                <br />
                 Each column is a sample group, and each row contains
-                the values for a taxon. Example output:
+                the values for a taxon.
+                <br />
+                Example output:
                 <pre>
 Property:,biomass
 Ecotope:,Mesohaline_Intertidal_Mud
@@ -245,10 +259,13 @@ AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
                 <dd>One data file is exported. The file contains
                 one normalized sample group for each ecotope. The
                 sample group that represents the ecotope best is
-                exported.<br />
-                Each column is a best representative sample group for
-                an ecotope, and each row contains the values for a
-                taxon. Example output:
+                exported.
+                <br />
+                Each column contains the values from the most
+                representative sample group for an ecotope, and each
+                row contains the values for a taxon.
+                <br />
+                Example output:
                 <pre>
 Property:,biomass
 Ecotope:,Polyhaline_Subtidal_Sand,Polyhaline_Intertidal_mud,Polyhaline_Subtidal_Mud,Polyhaline_Intertidal_Sand,Polyhaline_Intertidal_Mud,Mesohaline_Subtidal_Sand,Mesohaline_Intertidal_Mud,Mesohaline_Intertidal_Sand,Mesohaline_Subtidal_Mud
@@ -277,6 +294,67 @@ Arenicola defodiens,,,,,,,,,
 Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
                 </pre></dd>
             </dl>
+        </div>
+
+        <div class="section" id="viewing-output-files">
+            <h2>Viewing Output Files <a class="headerlink" href="#viewing-output-files">&para;</a></h2>
+        </div>
+        <div>
+            <p>The output files created by Bioden are stored in CSV (Comma
+            Separated Values) format. You can view these output files
+            in any spreadsheet application (e.g. Microsoft Excel,
+            OpenOffice.org Calc). Your spreadsheet application however
+            does need to know some basic information about the CSV file
+            before it can view it properly. For example, it needs to know
+            the character used as a field delimiter, which is a comma.
+            So you need to tell your spreadsheet application
+            to use the comma character as the field delimiter, along
+            some other properties. I will explain how to do this for
+            the two most popular spreadsheet applications.</p>
+
+            <h3>Microsoft Excel 2007</h3>
+            <ol>
+                <li>Start Microsoft Excel. Make sure you have open the
+                Excel 2007 worksheet that you would like to import the
+                ouput data file into.</li>
+                <li>Go to the "Data/Gegevens" tab.</li>
+                <li>Click on the "From Text/Van text" button. This will open the
+                file select browser window. Navigate to where the output
+                files are stored. Then select one of the output files.
+                All output files have the extension ".csv".</li>
+                <li>After selecting an output file, the "Text Import
+                Wizard/Wizard Text importeren" window is displayed. In
+                that window set:
+                    <ul>
+                        <li>"Original Data Type/Oorspronkelijk gegevenstype" to
+                        "Delimited/Gescheiden"</li>
+                        <li>"File origin/Oorspronkelijk bestand"
+                        to "United States/Verenigde Staten"</li>
+                    </ul>
+                Click the "Next/Volgende" button.
+                </li>
+                <li>In the next window that appears we need to change
+                the Delimiter from Tab to Comma. Uncheck "Tab" and
+                check "Comma/Komma" under "Delimiters/Scheidingstekens".</li>
+                <li>Press "Finish/Voltooien". The data from the output file
+                should now be displayed in the correct columns.</li>
+            </ol>
+
+            <h3>OpenOffice.org Calc</h3>
+            <ol>
+                <li>Go to the folder containing the output files.</li>
+                <li>Right-click on an output file, and select
+                "Open With > OpenOffice.org Calc". The "Text Import"
+                window should now appear.</li>
+                <li>In the Text Import window, set:
+                    <ul>
+                        <li>"Language" to "English (USA)"</li>
+                        <li>"Separator options" to "Separated by" to "Comma"</li>
+                    </ul>
+                </li>
+                <li>Press OK. The data from the output file
+                should now be displayed in the correct columns.</li>
+            </ol>
         </div>
 
     </div>
