@@ -27,6 +27,7 @@ import webbrowser
 import csv
 import logging
 from sqlite3 import dbapi2 as sqlite
+import warnings
 
 try:
     import pygtk
@@ -42,6 +43,12 @@ except ImportError:
         "Please install this module and try again.")
 
 gobject.threads_init()
+
+# The following is a workaround for the executable created with Py2exe.
+# When warnings are emitted in windows mode (no console available) the
+# warning messages can't be correctly output and the application exits
+# with an error message. So we filter out warnings to avoid the problem.
+warnings.simplefilter('ignore')
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, GiMaRIS"
