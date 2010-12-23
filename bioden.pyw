@@ -25,7 +25,6 @@ import time
 import threading
 import webbrowser
 import csv
-import logging
 from sqlite3 import dbapi2 as sqlite
 import warnings
 
@@ -54,21 +53,17 @@ __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, GiMaRIS"
 __credits__ = ["Serrano Pereira <serrano.pereira@gmail.com>"]
 __license__ = "GPL3"
-__version__ = "0.1"
+__version__ = "0.2"
 __maintainer__ = "Serrano Pereira"
 __email__ = "serrano.pereira@gmail.com"
 __status__ = "Production"
-__date__ = "2010/12/12"
+__date__ = "2010/12/23"
 
 
 def to_float(x):
     """Return the float from a number which uses a comma as the decimal
     separator."""
     return float(x.replace(',','.'))
-
-def uniqify(seq):
-    """Remove all duplicates from a list."""
-    return {}.fromkeys(seq).keys()
 
 def median(values):
     """Return the median of a series of numbers."""
@@ -103,6 +98,8 @@ class ProgressDialog(object):
         self.dialog = self.builder.get_object('progress_dialog')
         self.pbar = self.builder.get_object('progressbar')
         self.label_action = self.builder.get_object('label_action')
+        self.textview = self.builder.get_object('textview_details')
+        self.textbuffer = self.builder.get_object('textbuffer_details')
 
         self.dialog.show()
 
@@ -129,13 +126,18 @@ class MainWindow(object):
 
         # Create a CSV filter for file choosers.
         self.filefilter_csv = gtk.FileFilter()
-        self.filefilter_csv.set_name("Comma Seperated File (*.csv)")
+        self.filefilter_csv.set_name("Text CSV (*.csv)")
         self.filefilter_csv.add_mime_type("text/csv")
         self.filefilter_csv.add_pattern("*.csv")
 
         # Add a CSV filter to the file chooser.
         self.chooser_input_file = self.builder.get_object('chooser_input_file')
         self.chooser_input_file.add_filter(self.filefilter_csv)
+
+        # Set the default folder for the output folder to the user's
+        # home folder rather than bioden's installation folder.
+        chooser_output_folder = self.builder.get_object('chooser_output_folder')
+        chooser_output_folder.set_current_folder(os.path.expanduser('~'))
 
         # Add items to the 'property' combobox.
         self.liststore_property = gtk.ListStore(gobject.TYPE_STRING)
@@ -378,8 +380,37 @@ class DataProcessor(threading.Thread):
         # automatically removed from the list of event sources.
         return False
 
+    def update_progress_details(self, text):
+        """Add `text` to the progress dialog's details text box."""
+
+        # If no progress dialog is set, do nothing.
+        if not self.pdialog:
+            return
+
+        # Add a newline at the end of 'text'.
+        text += "\n"
+
+        # This is always called from a separate thread, so we must use
+        # gobject.idle_add to access the GUI.
+        gobject.idle_add(self.on_update_progress_details, text)
+
+    def on_update_progress_details(self, text):
+        """Add `text` to the progress dialog's details text box. This
+        function is called by :meth:`update_progress_details`, and
+        should not be called manually."""
+
+        # Update text for the details textview.
+        self.pdialog.textbuffer.insert_at_cursor(text)
+
+        # Scroll to the bottom of the textview.
+        self.pdialog.textview.scroll_mark_onscreen(self.pdialog.textbuffer.get_insert())
+
+        # This callback function must return False, so it is
+        # automatically removed from the list of event sources.
+        return False
+
     def run(self):
-        progress_steps = 7.0
+        progress_steps = 8.0
 
         # Check if all required settings are set.
         self.check_settings()
@@ -397,10 +428,10 @@ class DataProcessor(threading.Thread):
             return
 
         self.update_progress_dialog(2/progress_steps,
-            "Making sample groups..."
+            "Making sample groups for property '%s'..." % (self.property)
             )
 
-        # Process data for the property.
+        # Process data for the property 'self.property'.
         self.process()
 
         self.update_progress_dialog(3/progress_steps,
@@ -423,12 +454,18 @@ class DataProcessor(threading.Thread):
         self.export_ecotopes('normalized')
 
         self.update_progress_dialog(6/progress_steps,
+            "Determining representative sample group for each ecotope..."
+            )
+
+        self.determine_representative_groups()
+
+        self.update_progress_dialog(7/progress_steps,
             "Exporting representative sample groups..."
             )
 
         self.export_representatives()
 
-        self.update_progress_dialog(7/progress_steps, "")
+        self.update_progress_dialog(8/progress_steps, "")
 
         # Emit the signal that the process was successful.
         gobject.idle_add(sender.emit, 'process-finished')
@@ -449,7 +486,7 @@ class DataProcessor(threading.Thread):
         """Extract the required columns from the CSV data and insert
         these into the database.
         """
-        logging.info("Loading data...")
+        self.update_progress_details("Loading data...")
 
         # Create a new database file.
         self.make_db()
@@ -584,7 +621,8 @@ class DataProcessor(threading.Thread):
         """Calculate the sample groups with a sample surface of 0.2
         and save them to the database.
         """
-        logging.info("Processing data for property '%s'..." % self.property)
+        log = "Processing data for property '%s'..." % self.property
+        self.update_progress_details(log)
 
         # Set the field to select from based on the property.
         self.select_field = self.properties[self.property]
@@ -592,7 +630,6 @@ class DataProcessor(threading.Thread):
         # This will automatically create a new database file.
         connection = sqlite.connect(self.dbfile)
         cursor = connection.cursor()
-        cursor2 = connection.cursor()
 
         # Compile a list of all taxa.
         cursor.execute("SELECT standardised_taxon FROM data")
@@ -610,16 +647,19 @@ class DataProcessor(threading.Thread):
         for ecotope in self.ecotopes:
             # Create a log message.
             log = "Processing ecotope '%s'..." % ecotope
-            logging.info(log)
-            #sys.stdout.write(log)
+            self.update_progress_details(log)
 
             # Get all sample codes matching the current ecotope.
             cursor.execute("SELECT sample_code "
                 "FROM data "
                 "WHERE compiled_ecotope = ?",
                 (ecotope,))
-            sample_codes_for_ecotope = [str(x[0]) for x in cursor]
-            sample_codes_for_ecotope = uniqify(sample_codes_for_ecotope)
+
+            sample_codes_for_ecotope = []
+            for sample_code in cursor:
+                sample_code = str(sample_code[0])
+                if sample_code not in sample_codes_for_ecotope:
+                    sample_codes_for_ecotope.append(sample_code)
 
             # Group the sums into groups with a surface of 0.2 or
             # higher.
@@ -628,24 +668,29 @@ class DataProcessor(threading.Thread):
             # Get each group from the sample, and insert the data for
             # that group into the database.
             for group_id, group in enumerate(groups, start=1):
+                # Unpack each raw group.
                 group_surface, group_data = group
 
+                # Unpack group data and insert it into the database.
                 for taxon, sum_of in group_data.iteritems():
-                    cursor2.execute("INSERT INTO sums_of \
+                    cursor.execute("INSERT INTO sums_of \
                         VALUES (null,?,?,?,?,?)",
                         (group_id, ecotope, taxon,
                         sum_of, group_surface))
 
+            # Make normalized groups out of the raw groups.
             # Make all group surfaces exactly 0.2 and transform the
             # corresponding sums accrodingly.
             normalized_groups = self.normalize_groups(groups)
 
             # Insert the normalized data into the database as well.
             for group_id, group in enumerate(normalized_groups, start=1):
+                # Unpack each normalized group.
                 group_surface, group_data = group
 
+                # Unpack group data and insert it into the database.
                 for taxon, sum_of in group_data.iteritems():
-                    cursor2.execute("INSERT INTO normalized_sums_of \
+                    cursor.execute("INSERT INTO normalized_sums_of \
                         VALUES (null,?,?,?,?,?)",
                         (group_id, ecotope, taxon,
                         sum_of, group_surface))
@@ -655,7 +700,6 @@ class DataProcessor(threading.Thread):
 
         # Close connection with the local database.
         cursor.close()
-        cursor2.close()
         connection.close()
 
     def make_groups(self, sample_codes):
@@ -729,6 +773,7 @@ class DataProcessor(threading.Thread):
         0.2.
         """
         for i, group in enumerate(groups):
+            # Unpack current group.
             group_surface, group_data = group
 
             # Skip the calculations for this group if the surface
@@ -736,14 +781,13 @@ class DataProcessor(threading.Thread):
             if group_surface == 0.2:
                 continue
 
+            # Calculate the factor needed to calculate the sum for a
+            # surface of 0.2 for each group.
+            factor = 0.2 / group_surface
+
+            # Unpack group data.
             for taxon, sum_of in group_data.iteritems():
-
-
-                # Calculate the factor needed to calculate the sum for a
-                # surface of 0.2.
-                factor = 0.2 / group_surface
-
-                # Calculate the sum if the factor would be 0.2.
+                # Calculate the sum if the group surface would be 0.2.
                 new_sum_of = sum_of * factor
 
                 # Set the new sum_of value for this taxon in the current
@@ -775,10 +819,16 @@ class DataProcessor(threading.Thread):
                     groups.append(id[0])
 
             for group_id in groups:
+                # We define the biodiversity for each group by looking
+                # up the number of taxa registered by that group ID and
+                # ecotope.
+                # Note: We exclude the taxa which have a 'sum of' of
+                # 0.
                 cursor.execute("SELECT COUNT(standardised_taxon) \
                     FROM sums_of \
                     WHERE compiled_ecotope = ? \
-                    AND group_id = ?",
+                    AND group_id = ? \
+                    AND sum_of > 0",
                     (ecotope, group_id)
                     )
                 diversity = cursor.fetchone()[0]
@@ -795,7 +845,7 @@ class DataProcessor(threading.Thread):
         cursor.close()
         connection.close()
 
-    def __determine_representative_groups(self):
+    def determine_representative_groups(self):
         """Determine which sample group is the most representative
         for each ecotope by finding which ecotope group's biodiversity
         is closest to the biodiversity median of the ecotope.
@@ -804,7 +854,7 @@ class DataProcessor(threading.Thread):
         # Determine the biodiversities.
         self.__determine_biodiversities()
 
-        # This will automatically create a new database file.
+        # Connect to the database.
         connection = sqlite.connect(self.dbfile)
         cursor = connection.cursor()
 
@@ -835,8 +885,8 @@ class DataProcessor(threading.Thread):
                 (ecotope,)
                 )
 
-            # Calculate the differences between the median for this
-            # ecotope and all diversities from this ecotope. Save
+            # Calculate the differences between the diversity median for
+            # this ecotope and all diversities from this ecotope. Save
             # the group_id for the group with the smalles difference.
             smallest_difference = None
             for diversity, group_id in cursor:
@@ -845,9 +895,7 @@ class DataProcessor(threading.Thread):
                 if smallest_difference == None:
                     smallest_difference = difference
                     self.representative_groups[ecotope] = group_id
-                    continue
-
-                if difference < smallest_difference:
+                elif difference < smallest_difference:
                     smallest_difference = difference
                     self.representative_groups[ecotope] = group_id
 
@@ -1015,11 +1063,6 @@ class DataProcessor(threading.Thread):
         """Return an iterator which generates the CSV data with
         only the representative group for each ecotope.
         """
-
-        # Determine the representative group for each ecotope.
-        self.__determine_representative_groups()
-
-        # Connect to the database.
         connection = sqlite.connect(self.dbfile)
         cursor = connection.cursor()
 
@@ -1095,7 +1138,7 @@ class DataProcessor(threading.Thread):
             output_file = os.path.join(self.output_folder, filename)
 
             # Export data.
-            logging.info("Saving %s sample groups of ecotope '%s' to %s" % (data, ecotope, output_file))
+            self.update_progress_details("Saving %s sample groups of ecotope '%s' to %s" % (data, ecotope, output_file))
             self.export_csv(output_file, csvgen)
 
     def export_ecotopes_transponed(self):
@@ -1109,7 +1152,7 @@ class DataProcessor(threading.Thread):
             output_file = os.path.join(self.output_folder, filename)
 
             # Export data.
-            logging.info("Saving transponed data of ecotope '%s' to %s" % (ecotope, output_file))
+            self.update_progress_details("Saving transponed data of ecotope '%s' to %s" % (ecotope, output_file))
             self.export_csv(output_file, csvgen)
 
     def export_representatives(self):
@@ -1120,7 +1163,7 @@ class DataProcessor(threading.Thread):
         output_file = os.path.join(self.output_folder, filename)
 
         # Export data.
-        logging.info("Saving representative sample groups to %s" % (output_file))
+        self.update_progress_details("Saving representative sample groups to %s" % (output_file))
         self.export_csv(output_file, csvgen)
 
     def export_csv(self, output_file, data_generator):
