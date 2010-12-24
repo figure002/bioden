@@ -6,7 +6,7 @@ import glob
 
 setup(
     name = 'bioden',
-    version = '0.1',
+    version = '0.2',
     description = "A data normalizer and transponer for CSV files containing taxon biomass/density data for ecotopes.",
     long_description="A data normalizer and transponer for CSV files containing taxon biomass/density data for ecotopes.",
     author='Serrano Pereira',
@@ -18,6 +18,7 @@ setup(
     scripts=['bioden.pyw'],
     windows = [
         {'script': 'bioden.pyw',
+        'icon_resources': [(1, 'icon.ico')],
         }
     ],
     options= {
@@ -30,6 +31,7 @@ setup(
                 ('docs', glob.glob('docs/*.*')),
                 ('test-data', glob.glob('test-data/*.*')),
                 ('.',['COPYING.txt']),
+                ('.',['icon.ico']),
                 ('Microsoft.VC90.CRT', glob.glob('Microsoft.VC90.CRT/*.*')),
     ],
 )

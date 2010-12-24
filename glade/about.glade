@@ -26,6 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.</property>
 	Arjan Gittenberger &lt;gittenberger@gimaris.com&gt;
 Application Developer:
 	Serrano Pereira &lt;serrano.pereira@gmail.com&gt;</property>
+    <property name="artists">Tango Desktop Project &lt;http://tango.freedesktop.org/&gt;</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox7">
         <property name="visible">True</property>

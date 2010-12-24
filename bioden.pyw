@@ -47,7 +47,8 @@ gobject.threads_init()
 # When warnings are emitted in windows mode (no console available) the
 # warning messages can't be correctly output and the application exits
 # with an error message. So we filter out warnings to avoid the problem.
-warnings.simplefilter('ignore')
+if os.name == 'nt':
+    warnings.simplefilter('ignore')
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, GiMaRIS"
