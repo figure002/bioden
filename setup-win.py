@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+import py2exe
 import glob
 
 setup(
@@ -15,9 +16,21 @@ setup(
     url='http://www.gimaris.com/',
 
     scripts=['bioden.pyw'],
+    windows = [
+        {'script': 'bioden.pyw',
+        'icon_resources': [(1, 'icon.ico')],
+        }
+    ],
+    options= {
+        'py2exe': {
+            'includes': 'pango,atk,gobject,gio,cairo,pangocairo',
+            'dll_excludes': [],
+            },
+    },
     data_files=[('glade', glob.glob('glade/*.*')),
         ('docs', glob.glob('docs/*.*')),
         ('test-data', glob.glob('test-data/*.*')),
-        ('.',['COPYING']),
+        ('.',['COPYING.txt']),
+        ('.',['icon.ico']),
         ],
 )

@@ -1,13 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>bioden Help Contents</title>
+    <title>Bioden Documentation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="./main.css" />
 </head>
 <body>
     <div id='content'>
-        <h1>Welcome to bioden's Documentation</h1>
+        <h1>Bioden Documentation</h1>
+
+        <p>Welcome to the documentation for Bioden.</p>
 
         <div class="section" id="intro">
             <h2>Introduction <a class="headerlink" href="#intro">&para;</a></h2>
@@ -17,8 +19,44 @@
             containing taxon biomass/density data for ecotopes.</p>
         </div>
 
+        <div class="section" id="requirements">
+            <h2>Requirements <a class="headerlink" href="#requirements">&para;</a></h2>
+        </div>
+        <div>
+            <p>Bioden has the following third-party dependencies:</p>
+
+            <ul>
+                <li><a href="http://www.python.org/about/legal/">Python</a></li>
+                <li><a href="http://www.gtk.org/index.php">GTK+</a></li>
+                <li><a href="http://www.pygtk.org/about.html">PyGTK</a></li>
+                <li><a href="http://cairographics.org/pycairo/">PyCairo</a></li>
+                <li><a href="http://www.pygtk.org/downloads.html">PyGObject</a></li>
+            </ul>
+
+            <p>The Windows&reg; installer comes bundled with these
+            dependencies. The third party tools bundled with Bioden are
+            property of their individual authors and are governed by
+            their individual applicable license.</p>
+        </div>
+
+        <div class="section" id="installation">
+            <h2>Installing Bioden <a class="headerlink" href="#installation">&para;</a></h2>
+        </div>
+        <div>
+            <h3>Microsoft&reg; Windows&reg;</h3>
+            <p>For Windows users, an installer is available that
+            includes the Bioden package together with necessary
+            pre-requisites listed under <a class="headerlink" href="#requirements">Requirements</a>.</p>
+
+            <h3>GNU/Linux</h3>
+            <p>GNU/Linux users can use the source package for Bioden.
+            The source package doesn't contain the listed pre-requisites
+            though. You'll have to install missing requirements manually
+            with your package manager.</p>
+        </div>
+
         <div class="section" id="using-bioden">
-            <h2>Using Bioden<a class="headerlink" href="#using-bioden">&para;</a></h2>
+            <h2>Using Bioden <a class="headerlink" href="#using-bioden">&para;</a></h2>
         </div>
         <div>
             <p>On Windows, go to Start menu > All Programs > GiMaRIS >
@@ -163,7 +201,7 @@
             <p>Bioden produces several output files in the specified output
             folder. All output files are saved in CSV (Comma Separated
             Values) format, and can be opened with any spreadsheet
-            application (e.g. Microsoft Excel, OpenOffice.org Calc
+            application (e.g. Microsoft&reg; Excel&reg;, OpenOffice.org Calc
             <a class="headerlink" href="#viewing-output-files">&para;</a>).</p>
 
             <p>The output files are described below:</p>
@@ -302,7 +340,7 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
         <div>
             <p>The output files created by Bioden are stored in CSV (Comma
             Separated Values) format. You can view these output files
-            in any spreadsheet application (e.g. Microsoft Excel,
+            in any spreadsheet application (e.g. Microsoft&reg; Excel&reg;,
             OpenOffice.org Calc). Your spreadsheet application however
             does need to know some basic information about the CSV file
             before it can view it properly. For example, it needs to know
@@ -312,10 +350,10 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
             some other properties. I will explain how to do this for
             the two most popular spreadsheet applications.</p>
 
-            <h3>Microsoft Excel 2007</h3>
+            <h3>Microsoft&reg; Excel&reg; 2007</h3>
             <ol>
-                <li>Start Microsoft Excel. Make sure you have open the
-                Excel 2007 worksheet that you would like to import the
+                <li>Start Microsoft&reg; Excel&reg;. Make sure you have open the
+                Excel&reg; 2007 worksheet that you would like to import the
                 ouput data file into.</li>
                 <li>Go to the "Data/Gegevens" tab.</li>
                 <li>Click on the "From Text/Van text" button. This will open the
@@ -356,6 +394,39 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
                 should now be displayed in the correct columns.</li>
             </ol>
         </div>
+
+        <div class="section" id="license">
+            <h2>Copying Permission Statement <a class="headerlink" href="#license">&para;</a></h2>
+        </div>
+        <div>
+            <p>Bioden is free software: you can redistribute it and/or modify
+            it under the terms of the GNU General Public License as published by
+            the Free Software Foundation, either version 3 of the License, or
+            (at your option) any later version.</p>
+
+            <p>Bioden is distributed in the hope that it will be useful,
+            but WITHOUT ANY WARRANTY; without even the implied warranty of
+            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+            GNU General Public License for more details.</p>
+
+            <p>You should have received a copy of the GNU General Public License
+            along with the program.  If not, see
+            <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+        </div>
+
+        <div class="section" id="troubleshoot">
+            <h2>Troubleshooting <a class="headerlink" href="#troubleshoot">&para;</a></h2>
+        </div>
+        <dl>
+            <dt>"This application has failed to start because the
+            application configuration is incorrect. Reinstalling the
+            application my fix this problem."</dt>
+            <dd>This error is most likely caused by a missing DLL.
+            The installer for Bioden has the option to install the
+            required DLL. To fix this problem, run the installer for
+            Bioden and make sure that the "Microsoft Visual C++" option
+            is checked. This will install the required DLL for Bioden.</dd>
+        </dl>
 
     </div>
 </body>

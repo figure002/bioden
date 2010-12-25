@@ -1,0 +1,5 @@
+include bioden.pyw setup.py setup-win.py COPYING icon.ico
+recursive-include docs *
+recursive-include glade *
+recursive-include test-data *
+

@@ -247,7 +247,7 @@ class MainWindow(object):
         """
 
         # Construct the path to the help file.
-        path = os.path.abspath(os.path.join('.','docs','user-manual.html'))
+        path = os.path.abspath(os.path.join('.','docs','documentation.html'))
 
         # Turn the path into an URL.
         if path.startswith('/'):
