@@ -16,7 +16,16 @@
         </div>
         <div>
             <p>Bioden is a data normalizer and transponer for CSV files
-            containing taxon biomass/density data for ecotopes.</p>
+            containing taxon biomass/density data for ecotopes. The name
+            Bioden is a combination of the words biomass and density. In
+            general the input file of Bioden includes a list of records
+            (rows in a table) that give species name, an abundance measure
+            (biomass and/or density), a sample code, the surface sampled and
+            the ecotope (input example). This list is transformed to a table in which the rows
+            represent species (names) and the columns represent samples (output example). This
+            table can serve as the input file for various programs that conduct
+            species community analyses.
+            </p>
         </div>
 
         <div class="section" id="requirements">
@@ -207,9 +216,9 @@
             <p>The output files are described below:</p>
 
             <dl>
-                <dt>Transponed ecotope files (<code>transponed_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dt>Raw ecotope files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
                 <dd>The original data is split by ecotope. So one data
-                file per ecotope is exported. The un-processed values are
+                file per ecotope is exported. The un-grouped values are
                 exported, but the data has been transponed/re-ordered.
                 <br />
                 Each column is a sample, and each row contains the values
@@ -234,7 +243,7 @@ AMPHIPODA,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                 </pre>
                 </dd>
 
-                <dt>RAW group files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dt>Grouped files (<code>grouped_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
                 <dd>One data file per ecotope is exported. Each file
                 contains the calculated sample groups for that ecotope.
                 Sample groups were created by summing samples for
