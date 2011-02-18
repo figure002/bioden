@@ -100,8 +100,8 @@ class MainWindow:
 
         # Add filters to the file chooser.
         self.chooser_input_file = self.builder.get_object('chooser_input_file')
-        self.chooser_input_file.add_filter(self.filefilter_csv)
         self.chooser_input_file.add_filter(self.filefilter_xsl)
+        self.chooser_input_file.add_filter(self.filefilter_csv)
 
         # Set the default folder for the output folder to the user's
         # home folder rather than bioden's installation folder.
@@ -109,10 +109,8 @@ class MainWindow:
         chooser_output_folder.set_current_folder(os.path.expanduser('~'))
 
         # Add items to the 'property' combobox.
-        self.liststore_property = gtk.ListStore(gobject.TYPE_STRING)
-        #self.liststore_property = self.builder.get_object('liststore_property')
+        #print gobject.type_name(gobject.TYPE_STRING)
         self.combobox_property = self.builder.get_object('combobox_property')
-        self.combobox_property.set_model(self.liststore_property)
         cell = gtk.CellRendererText()
         self.combobox_property.pack_start(cell, True)
         self.combobox_property.add_attribute(cell, 'text', 0)
@@ -121,9 +119,8 @@ class MainWindow:
         self.combobox_property.set_active(0)
 
         # Add items to the 'output format' combobox.
-        self.liststore_output_format = gtk.ListStore(gobject.TYPE_STRING)
+        #print gobject.type_name(gobject.TYPE_STRING)
         self.combobox_output_format = self.builder.get_object('combobox_output_format')
-        self.combobox_output_format.set_model(self.liststore_output_format)
         cell = gtk.CellRendererText()
         self.combobox_output_format.pack_start(cell, True)
         self.combobox_output_format.add_attribute(cell, 'text', 0)
@@ -134,14 +131,20 @@ class MainWindow:
         # Set the default value for the 'round' spinbutton.
         self.builder.get_object('adjustment_round').set_value(-1)
 
-        # Change the color of the warning frame.
-        frame_warning = self.builder.get_object('frame_warning')
-        color = gtk.gdk.color_parse('#E0B6AF')
-        frame_warning.modify_bg(gtk.STATE_NORMAL, color)
+        # Change the background color of the warning frame.
+        # Looks good in Linux, hella ugly in Windows.
+        if os.name == 'posix':
+            frame_warning = self.builder.get_object('frame_warning')
+            frame_warning.set_shadow_type(gtk.SHADOW_OUT)
+            color = gtk.gdk.color_parse('#EFE0CD')
+            frame_warning.modify_bg(gtk.STATE_NORMAL, color)
 
     def on_combobox_output_format_changed(self, combobox, data=None):
+        """Show the .xls warning message if the user selected .xls as the
+        output format.
+        """
         active = combobox.get_active()
-        output_format = self.liststore_output_format[active][0]
+        output_format = self.builder.get_object('liststore_output_format')[active][0]
         if ".xls" in output_format:
             self.builder.get_object('frame_warning').show()
         else:

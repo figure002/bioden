@@ -376,8 +376,8 @@ class XLSExporter(Generator):
         result = self.write_rows(ws, data)
         wb.save(output_file)
 
-        if not result:
-            print "Reached maximum of 256 columns for %s. Only the first 256 columns have been exported." % output_file
+        #if not result:
+        #    print "Reached maximum of 256 columns for %s." % output_file
 
     def write_rows(self, work_sheet, data):
         out = True

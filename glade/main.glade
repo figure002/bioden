@@ -316,7 +316,7 @@
                 <property name="width_request">200</property>
                 <property name="visible">True</property>
                 <property name="label_xalign">0</property>
-                <property name="shadow_type">out</property>
+                <property name="shadow_type">in</property>
                 <child>
                   <object class="GtkAlignment" id="alignment_warning">
                     <property name="visible">True</property>
@@ -333,7 +333,8 @@
                 </child>
                 <child type="label">
                   <object class="GtkLabel" id="label_warning_title">
-                    <property name="label" translatable="yes">&lt;b&gt;Warning&lt;/b&gt;</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Note&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                 </child>
@@ -465,13 +466,23 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="liststore_property"/>
   <object class="GtkAdjustment" id="adjustment_round">
     <property name="value">-1</property>
     <property name="lower">-1</property>
-    <property name="upper">5</property>
+    <property name="upper">5.0000000002235172</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkListStore" id="liststore_output_format"/>
+  <object class="GtkListStore" id="liststore_property">
+    <columns>
+      <!-- column-name property -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="liststore_output_format">
+    <columns>
+      <!-- column-name output_format -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
 </interface>
