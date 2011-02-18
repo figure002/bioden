@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# bioden - A data normalizer and transponer for CSV files containing
-# taxon biomass/density data for ecotopes.
+#  Copyright 2010, 2011, GiMaRIS <info@gimaris.com>
 #
-#  Copyright 2010, GiMaRIS <info@gimaris.com>
+#  This file is part of BioDen - A data normalizer and transponer for
+#  files containing taxon biomass/density data for ecotopes.
 #
-#  This program is free software: you can redistribute it and/or modify
+#  SETLyze is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
+#  SETLyze is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -35,17 +35,17 @@ import std
 import processor
 
 __author__ = "Serrano Pereira"
-__copyright__ = "Copyright 2010, GiMaRIS"
+__copyright__ = "Copyright 2010, 2011, GiMaRIS"
 __credits__ = ["Serrano Pereira <serrano.pereira@gmail.com>"]
 __license__ = "GPL3"
 __version__ = "0.3"
 __maintainer__ = "Serrano Pereira"
 __email__ = "serrano.pereira@gmail.com"
 __status__ = "Production"
-__date__ = "2010/12/23"
+__date__ = "2011/02/18"
 
 
-class ProgressDialog(object):
+class ProgressDialog:
     """Display a progress dialog."""
 
     def __init__(self):
@@ -63,7 +63,7 @@ class ProgressDialog(object):
     def destroy(self):
         self.dialog.destroy()
 
-class MainWindow(object):
+class MainWindow:
     def __init__(self):
         self.builder = gtk.Builder()
         self.builder.add_from_file('glade/main.glade')
@@ -133,6 +133,19 @@ class MainWindow(object):
 
         # Set the default value for the 'round' spinbutton.
         self.builder.get_object('adjustment_round').set_value(-1)
+
+        # Change the color of the warning frame.
+        frame_warning = self.builder.get_object('frame_warning')
+        color = gtk.gdk.color_parse('#E0B6AF')
+        frame_warning.modify_bg(gtk.STATE_NORMAL, color)
+
+    def on_combobox_output_format_changed(self, combobox, data=None):
+        active = combobox.get_active()
+        output_format = self.liststore_output_format[active][0]
+        if ".xls" in output_format:
+            self.builder.get_object('frame_warning').show()
+        else:
+            self.builder.get_object('frame_warning').hide()
 
     def on_window_destroy(self, widget, data=None):
         gtk.main_quit()
@@ -233,6 +246,7 @@ class MainWindow(object):
         builder.add_from_file('glade/about.glade')
 
         about = builder.get_object('about_dialog')
+        about.set_copyright(__copyright__)
         about.set_version(__version__)
         about.run()
         about.destroy()

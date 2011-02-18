@@ -5,7 +5,7 @@
   <object class="GtkWindow" id="main_window">
     <property name="width_request">400</property>
     <property name="visible">True</property>
-    <property name="title" translatable="yes">bioden</property>
+    <property name="title" translatable="yes">BioDen</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
     <signal name="destroy" handler="on_window_destroy"/>
@@ -54,7 +54,7 @@
           <object class="GtkTable" id="table">
             <property name="visible">True</property>
             <property name="border_width">10</property>
-            <property name="n_rows">7</property>
+            <property name="n_rows">10</property>
             <property name="n_columns">2</property>
             <property name="column_spacing">10</property>
             <property name="row_spacing">5</property>
@@ -93,8 +93,8 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="top_attach">6</property>
-                <property name="bottom_attach">7</property>
+                <property name="top_attach">9</property>
+                <property name="bottom_attach">10</property>
               </packing>
             </child>
             <child>
@@ -117,18 +117,18 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkTable" id="table_advanced">
+                  <object class="GtkTable" id="table_advanced1">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">2</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">10</property>
                     <property name="row_spacing">5</property>
                     <child>
-                      <object class="GtkLabel" id="label_delimiter">
+                      <object class="GtkLabel" id="label_sample_surface">
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">A one-character string used to separate fields in the input CSV file.</property>
+                        <property name="tooltip_text" translatable="yes">The sample surface used for AMBI files.</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Field delimiter of the input file:</property>
+                        <property name="label" translatable="yes">Target sample surface:</property>
                         <property name="justify">right</property>
                       </object>
                       <packing>
@@ -137,18 +137,18 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_quotechar">
+                      <object class="GtkEntry" id="input_sample_surface">
+                        <property name="width_request">50</property>
                         <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">A one-character string used to quote fields containing special characters in the input CSV file.</property>
-                        <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Quote character of the input file:</property>
-                        <property name="justify">right</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                        <property name="text" translatable="yes">0.2</property>
                       </object>
                       <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options">GTK_SHRINK | GTK_FILL</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">GTK_SHRINK</property>
+                        <property name="y_options">GTK_SHRINK</property>
                       </packing>
                     </child>
                     <child>
@@ -160,42 +160,10 @@
                         <property name="justify">right</property>
                       </object>
                       <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="input_delimiter">
-                        <property name="width_request">50</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="text" translatable="yes">;</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="x_options">GTK_SHRINK</property>
-                        <property name="y_options">GTK_SHRINK</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="input_quotechar">
-                        <property name="width_request">50</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="text" translatable="yes">"</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">GTK_SHRINK</property>
-                        <property name="y_options">GTK_SHRINK</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_SHRINK | GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
@@ -212,8 +180,8 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_SHRINK</property>
                         <property name="y_options">GTK_SHRINK</property>
                       </packing>
@@ -221,7 +189,7 @@
                   </object>
                 </child>
                 <child type="label">
-                  <object class="GtkLabel" id="label_advanced">
+                  <object class="GtkLabel" id="label_advanced_options">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Advanced Options</property>
                   </object>
@@ -229,8 +197,8 @@
               </object>
               <packing>
                 <property name="right_attach">2</property>
-                <property name="top_attach">5</property>
-                <property name="bottom_attach">6</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
               </packing>
             </child>
             <child>
@@ -251,51 +219,16 @@
             <child>
               <object class="GtkLabel" id="label_output_format">
                 <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">The file format to save the output files to.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Format for output files:</property>
                 <property name="justify">right</property>
               </object>
               <packing>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_sample_surface">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Target sample surface:</property>
-                <property name="justify">right</property>
-              </object>
-              <packing>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="y_options">GTK_SHRINK | GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkAlignment" id="alignment1">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="xscale">0</property>
-                <child>
-                  <object class="GtkEntry" id="input_sample_surface">
-                    <property name="width_request">50</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="text" translatable="yes">0.2</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
@@ -358,9 +291,6 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="GtkAlignment" id="alignment5">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
@@ -370,15 +300,162 @@
                     <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="model">liststore_output_format</property>
+                    <signal name="changed" handler="on_combobox_output_format_changed"/>
                   </object>
                 </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFrame" id="frame_warning">
+                <property name="width_request">200</property>
+                <property name="visible">True</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">out</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment_warning">
+                    <property name="visible">True</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <object class="GtkLabel" id="label_warning">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Excel (.xls) files support a maximum of 256 columns. Columns that exceed this limit won't be exported!</property>
+                        <property name="wrap">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="label_warning_title">
+                    <property name="label" translatable="yes">&lt;b&gt;Warning&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
                 <property name="top_attach">4</property>
                 <property name="bottom_attach">5</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="hseparator1">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkExpander" id="expander_csv_options">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkTable" id="table_advanced2">
+                    <property name="visible">True</property>
+                    <property name="n_rows">2</property>
+                    <property name="n_columns">2</property>
+                    <property name="column_spacing">10</property>
+                    <property name="row_spacing">5</property>
+                    <child>
+                      <object class="GtkLabel" id="label_delimiter">
+                        <property name="visible">True</property>
+                        <property name="tooltip_text" translatable="yes">A one-character string used to separate fields in the input CSV file.</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Field delimiter of the input file:</property>
+                        <property name="justify">right</property>
+                      </object>
+                      <packing>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_SHRINK | GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_quotechar">
+                        <property name="visible">True</property>
+                        <property name="tooltip_text" translatable="yes">A one-character string used to quote fields containing special characters in the input CSV file.</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Quote character of the input file:</property>
+                        <property name="justify">right</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_SHRINK | GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="input_delimiter">
+                        <property name="width_request">50</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="max_length">1</property>
+                        <property name="invisible_char">•</property>
+                        <property name="width_chars">1</property>
+                        <property name="text" translatable="yes">;</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">GTK_SHRINK</property>
+                        <property name="y_options">GTK_SHRINK</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="input_quotechar">
+                        <property name="width_request">50</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="max_length">1</property>
+                        <property name="invisible_char">•</property>
+                        <property name="width_chars">1</property>
+                        <property name="text" translatable="yes">"</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_SHRINK</property>
+                        <property name="y_options">GTK_SHRINK</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="label_csv_options">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">CSV Input File Options</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="hseparator2">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
