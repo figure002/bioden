@@ -169,9 +169,9 @@ class MainWindow:
         delimiter = self.builder.get_object('input_delimiter').get_text()
         quotechar = self.builder.get_object('input_quotechar').get_text()
         active = self.combobox_property.get_active()
-        property = self.liststore_property[active][0]
+        property = self.builder.get_object('liststore_property')[active][0]
         active = self.combobox_output_format.get_active()
-        output_format = self.liststore_output_format[active][0]
+        output_format = self.builder.get_object('liststore_output_format')[active][0]
         target_sample_surface = float(self.builder.get_object('input_sample_surface').get_text())
         decimals = int(self.builder.get_object('spinbutton_round').get_value())
 
