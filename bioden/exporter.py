@@ -6,12 +6,12 @@
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
 #
-#  SETLyze is free software: you can redistribute it and/or modify
+#  BioDen is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SETLyze is distributed in the hope that it will be useful,
+#  BioDen is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -42,14 +42,14 @@ class Generator:
 
     def __init__(self, processor):
         self.processor = processor
-        self.dbfile = processor.dbfile
-        self.property = processor.property
+        self._dbfile = processor._dbfile
+        self._property = processor._property
+        self._representative_groups = processor._representative_groups
+        self._do_round = processor._do_round
+        self._output_folder = processor._output_folder
+        self._file_extension = ".txt"
         self.taxa = processor.taxa
         self.ecotopes = processor.ecotopes
-        self.representative_groups = processor.representative_groups
-        self.do_round = processor.do_round
-        self.output_folder = processor.output_folder
-        self.file_extension = ".txt"
 
     def ecotope_data_grouped(self, ecotope, data_type='raw'):
         """Return a iterator object which generates the CSV data of
@@ -63,10 +63,10 @@ class Generator:
             raise ValueError("Value for 'data' can be either 'raw' or 'normalized', not '%s'." % data_type)
 
         # Connect to the database.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
-        yield ['Property:', self.property]
+        yield ['Property:', self._property]
 
         # Return the first row containing the ecotope name.
         yield ['Ecotope:', ecotope]
@@ -118,8 +118,8 @@ class Generator:
             for group_id in group_ids:
                 if group_id in sums_of:
                     sum_of = sums_of[group_id]
-                    if isinstance(self.do_round, int):
-                        sum_of = round(sum_of, self.do_round)
+                    if isinstance(self._do_round, int):
+                        sum_of = round(sum_of, self._do_round)
                     row.append(sum_of)
                 else:
                     row.append(None)
@@ -134,16 +134,16 @@ class Generator:
         """Return a iterator object which generates the CSV data of
         non-grouped data for ecotope `ecotope`.
         """
-        if self.property == 'biomass':
+        if self._property == 'biomass':
             select_field = 'sum_of_biomass'
         else:
             select_field = 'sum_of_density'
 
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # Return the first row containing the property.
-        yield ['Property:', self.property]
+        yield ['Property:', self._property]
 
         # Return the second row containing the ecotope name.
         yield ['Ecotope:', ecotope]
@@ -195,8 +195,8 @@ class Generator:
             for sample_code in sample_codes:
                 if sample_code in sums_of:
                     sum_of = sums_of[sample_code]
-                    if isinstance(self.do_round, int):
-                        sum_of = round(sum_of, self.do_round)
+                    if isinstance(self._do_round, int):
+                        sum_of = round(sum_of, self._do_round)
                     row.append(sum_of)
                 else:
                     row.append(None)
@@ -211,10 +211,10 @@ class Generator:
         """Return a iterator object which generates the CSV data with
         only the representative group for each ecotope.
         """
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
-        yield ['Property:', self.property]
+        yield ['Property:', self._property]
 
         # Return the first row containing the ecotopes.
         row = ['Ecotope:']
@@ -226,12 +226,12 @@ class Generator:
         row = ['Group surface:']
         for ecotope in self.ecotopes:
             # Append and empty field if the ecotope has no group.
-            if ecotope not in self.representative_groups:
+            if ecotope not in self._representative_groups:
                 row.append(None)
                 continue
 
             # Get the most representative group for this ecotope.
-            group_id = self.representative_groups[ecotope]
+            group_id = self._representative_groups[ecotope]
 
             # Get the group surfaces for this group.
             cursor.execute("SELECT group_surface \
@@ -251,12 +251,12 @@ class Generator:
             row = [taxon]
             for ecotope in self.ecotopes:
                 # Append and empty field if the ecotope has no group.
-                if ecotope not in self.representative_groups:
+                if ecotope not in self._representative_groups:
                     row.append(None)
                     continue
 
                 # Get the most representative group for this ecotope.
-                group_id = self.representative_groups[ecotope]
+                group_id = self._representative_groups[ecotope]
 
                 # Get the sum_of
                 cursor.execute("SELECT sum_of \
@@ -272,8 +272,8 @@ class Generator:
                     row.append(None)
                 else:
                     density = density[0]
-                    if isinstance(self.do_round, int):
-                        density = round(density, self.do_round)
+                    if isinstance(self._do_round, int):
+                        density = round(density, self._do_round)
                     row.append(density)
             yield row
 
@@ -303,8 +303,8 @@ class Generator:
                 raise ValueError("Value for 'data' can be either 'raw' or 'normalized', not '%s'." % data_type)
 
             suffix = ecotope.replace(" ", "_")
-            filename = "%s_%s_%s%s" % (prefix, self.property, suffix, self.file_extension)
-            output_file = os.path.join(self.output_folder, filename)
+            filename = "%s_%s_%s%s" % (prefix, self._property, suffix, self._file_extension)
+            output_file = os.path.join(self._output_folder, filename)
 
             # Export data.
             self.processor.pdialog_handler.add_details("Saving %s sample groups of ecotope '%s' to %s" % (data_type, ecotope, output_file))
@@ -323,8 +323,8 @@ class Generator:
 
             # Construct a filename.
             suffix = ecotope.replace(" ", "_")
-            filename = "raw_%s_%s%s" % (self.property, suffix, self.file_extension)
-            output_file = os.path.join(self.output_folder, filename)
+            filename = "raw_%s_%s%s" % (self._property, suffix, self._file_extension)
+            output_file = os.path.join(self._output_folder, filename)
 
             # Export data.
             self.processor.pdialog_handler.add_details("Saving raw data of ecotope '%s' to %s" % (ecotope, output_file))
@@ -337,8 +337,8 @@ class Generator:
         # Create a CSV generator.
         data = self.representatives()
 
-        filename = "representatives_%s%s" % (self.property, self.file_extension)
-        output_file = os.path.join(self.output_folder, filename)
+        filename = "representatives_%s%s" % (self._property, self._file_extension)
+        output_file = os.path.join(self._output_folder, filename)
 
         # Export data.
         self.processor.pdialog_handler.add_details("Saving representative sample groups to %s" % (output_file))
@@ -349,7 +349,7 @@ class CSVExporter(Generator):
 
     def __init__(self, processor):
         Generator.__init__(self, processor)
-        self.file_extension = ".csv"
+        self._file_extension = ".csv"
 
     def export(self, output_file, data):
         """Write CSV data `data` to file `output_file`. For better performance,
@@ -365,7 +365,7 @@ class XLSExporter(Generator):
 
     def __init__(self, processor):
         Generator.__init__(self, processor)
-        self.file_extension = ".xls"
+        self._file_extension = ".xls"
 
     def export(self, output_file, data):
         """Write CSV data `data` to file `output_file`. For better performance,

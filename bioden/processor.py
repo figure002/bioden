@@ -6,12 +6,12 @@
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
 #
-#  SETLyze is free software: you can redistribute it and/or modify
+#  BioDen is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SETLyze is distributed in the hope that it will be useful,
+#  BioDen is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -29,8 +29,8 @@ import csv
 import gobject
 import xlrd
 
-import std
-import exporter
+import bioden.std
+import bioden.exporter
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, 2011, GiMaRIS"
@@ -47,24 +47,41 @@ class DataProcessor(threading.Thread):
     def __init__(self):
         super(DataProcessor, self).__init__()
 
-        self.reader = None
-        self.output_folder = None
-        self.property = None
-        self.dbfile = None
-        self.do_round = None
-        self.target_sample_surface = 0.2
-        self.output_format = 'csv'
-        self.pdialog = None
-        self.pdialog_handler = std.ProgressDialogHandler()
-
+        self._input_file = None
+        self._reader = None
+        self._output_folder = None
+        self._property = None
+        self._dbfile = None
+        self._do_round = None
+        self._target_sample_surface = 0.2
+        self._output_format = 'csv'
+        self._pdialog = None
+        self.pdialog_handler = bioden.std.ProgressDialogHandler()
+        self._representative_groups = {}
+        self._properties = {'density': 'sum_of_density',
+            'biomass': 'sum_of_biomass'}
         self.ecotopes = []
         self.taxa = []
-        self.representative_groups = {}
-        self.properties = {'density': 'sum_of_density',
-            'biomass': 'sum_of_biomass'}
 
         # Set the path to the database file.
         self.set_directives()
+
+    def set_input_file(self, filename, type):
+        """Set the input file and type."""
+        supported_types = ('csv','xls')
+        if type not in supported_types:
+            raise ValueError("Possible values for 'type' are 'csv' and 'xls', not '%s'." % type)
+        self._input_file = (filename, type)
+
+    def create_reader(self):
+        """Set a file reader from the input file and type."""
+        if self._input_file[1] == "csv":
+            reader = csv.DictReader(open(self._input_file[0]), fieldnames=None,
+                delimiter=delimiter, quotechar=quotechar)
+            self.set_reader(reader)
+        elif self._input_file[1] == "xls":
+            book = xlrd.open_workbook(self._input_file[0])
+            self.set_reader(book)
 
     def set_directives(self):
         """Set the path to the database file."""
@@ -75,15 +92,15 @@ class DataProcessor(threading.Thread):
             os.makedirs(data_path)
 
         # Set the path to the database file.
-        self.dbfile = os.path.join(data_path, 'data.sqlite')
+        self._dbfile = os.path.join(data_path, 'data.sqlite')
 
     def set_progress_dialog(self, pdialog):
-        self.pdialog = pdialog
+        self._pdialog = pdialog
         self.pdialog_handler.set_progress_dialog(pdialog)
 
     def set_property(self, property):
-        if property in self.properties:
-            self.property = property
+        if property in self._properties:
+            self._property = property
         else:
             raise ValueError("Property can be either 'density' or "
                 "'biomass', not '%s'." % property)
@@ -91,41 +108,46 @@ class DataProcessor(threading.Thread):
     def set_output_folder(self, output_folder):
         if not os.path.exists(output_folder):
             raise ValueError("Output folder does not exist.")
-        self.output_folder = output_folder
+        self._output_folder = output_folder
 
     def set_round(self, round_to):
         if not isinstance(round_to, int) or round_to < 0:
             raise ValueError("Argument 'round_to' must be an integer >= 0.")
-        self.do_round = round_to
+        self._do_round = round_to
 
     def set_target_sample_surface(self, surface):
         if not isinstance(surface, float) or surface <= 0:
             raise ValueError("Argument 'surface' must be a float > 0.")
-        self.target_sample_surface = surface
+        self._target_sample_surface = surface
 
     def set_output_format(self, format):
         formats = ('csv', 'xls')
         if format not in formats:
             raise ValueError("Possible formats are 'csv' and 'xls', not '%s'." % format)
-        self.output_format = format
+        self._output_format = format
 
     def run(self):
         # Create a CSV or XSL generator.
-        if self.output_format == 'csv':
-            generator = exporter.CSVExporter(self)
-        elif self.output_format == 'xls':
-            generator = exporter.XLSExporter(self)
+        if self._output_format == 'csv':
+            generator = bioden.exporter.CSVExporter(self)
+        elif self._output_format == 'xls':
+            generator = bioden.exporter.XLSExporter(self)
 
         # Check if all required settings are set.
         self.check_settings()
 
         # Load the data.
         self.pdialog_handler.set_action("Loading data...")
+        self.pdialog_handler.add_details("Loading data...")
         try:
+            # Create and set the file reader.
+            self.create_reader()
+
+            # Load the data.
             self.load_data()
         except:
             # Emit the signal that the process has failed.
-            gobject.idle_add(std.sender.emit, 'load-data-failed')
+            gobject.idle_add(bioden.std.sender.emit, 'load-data-failed')
             return
 
         # Pre-process some data. This will populate self.ecotopes, which
@@ -136,8 +158,8 @@ class DataProcessor(threading.Thread):
         steps = 7 + (len(self.ecotopes) * 4)
         self.pdialog_handler.set_total_steps(steps)
 
-        # Process data for the property 'self.property'.
-        self.pdialog_handler.increase("Making sample groups for property '%s'..." % (self.property))
+        # Process data for the property 'self._property'.
+        self.pdialog_handler.increase("Making sample groups for property '%s'..." % (self._property))
         # Here, pdialog_handler.increase will be called for each ecotope.
         self.process()
 
@@ -163,16 +185,16 @@ class DataProcessor(threading.Thread):
         self.pdialog_handler.increase("")
 
         # Emit the signal that the process was successful.
-        gobject.idle_add(std.sender.emit, 'process-finished')
+        gobject.idle_add(bioden.std.sender.emit, 'process-finished')
 
     def check_settings(self):
-        if not self.reader:
-            raise ValueError("Attribute 'reader' has not been set.")
-        if not self.dbfile:
+        if not self._input_file:
+            raise ValueError("Attribute 'input_file' has not been set.")
+        if not self._dbfile:
             raise ValueError("Attribute 'dbfile' has not been set.")
-        if not self.property:
+        if not self._property:
             raise ValueError("Attribute 'property' has not been set.")
-        if not self.output_folder:
+        if not self._output_folder:
             raise ValueError("Attribute 'output_folder' has not been set.")
 
         return True
@@ -181,11 +203,11 @@ class DataProcessor(threading.Thread):
         """Create the database file with the necessary tables."""
 
         # Delete the current database file.
-        if os.path.isfile(self.dbfile):
+        if os.path.isfile(self._dbfile):
             self.remove_db_file()
 
         # This will automatically create a new database file.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         cursor.execute("CREATE TABLE data ( \
@@ -239,9 +261,9 @@ class DataProcessor(threading.Thread):
         if tries > 2:
             raise EnvironmentError("Unable to remove the file %s. "
                 "Please make sure it's not in use by a different "
-                "process." % self.dbfile)
+                "process." % self._dbfile)
         try:
-            os.remove(self.dbfile)
+            os.remove(self._dbfile)
         except:
             tries += 1
             time.sleep(2)
@@ -250,7 +272,7 @@ class DataProcessor(threading.Thread):
 
     def pre_process(self):
         # This will automatically create a new database file.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # Compile a list of all taxa.
@@ -275,16 +297,16 @@ class DataProcessor(threading.Thread):
 
     def process(self):
         """Calculate the sample groups with a sample surface of
-        'self.target_sample_surface' and save them to the database.
+        'self._target_sample_surface' and save them to the database.
         """
-        log = "Processing data for property '%s'..." % self.property
+        log = "Processing data for property '%s'..." % self._property
         self.pdialog_handler.add_details(log)
 
         # Set the field to select from based on the property.
-        self.select_field = self.properties[self.property]
+        self.select_field = self._properties[self._property]
 
         # This will automatically create a new database file.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # Walk through each ecotope.
@@ -309,7 +331,7 @@ class DataProcessor(threading.Thread):
                     sample_codes_for_ecotope.append(sample_code)
 
             # Group the sums into groups with a surface of
-            # 'self.target_sample_surface' or higher.
+            # 'self._target_sample_surface' or higher.
             groups = self.make_groups(sample_codes_for_ecotope)
 
             # Get each group from the sample, and insert the data for
@@ -326,7 +348,7 @@ class DataProcessor(threading.Thread):
                         sum_of, group_surface))
 
             # Make normalized groups out of the raw groups.
-            # Make all group surfaces exactly 'self.target_sample_surface' and
+            # Make all group surfaces exactly 'self._target_sample_surface' and
             # transform the corresponding sums accrodingly.
             normalized_groups = self.normalize_groups(groups)
 
@@ -351,10 +373,10 @@ class DataProcessor(threading.Thread):
 
     def make_groups(self, sample_codes):
         """Return sample groups with a sample surface of
-        `self.target_sample_surface` or higher for the list of sample codes
+        `self._target_sample_surface` or higher for the list of sample codes
         `sample_codes`.
         """
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
         cursor2 = connection.cursor()
 
@@ -397,11 +419,11 @@ class DataProcessor(threading.Thread):
                     group_data[taxon] = sum_of
 
             # Check if we reached the current group's maximum surface.
-            if group_surface >= self.target_sample_surface:
+            if group_surface >= self._target_sample_surface:
                 # When this group reached a group_surface of
-                # 'self.target_sample_surface' or higher, add it to the
+                # 'self._target_sample_surface' or higher, add it to the
                 # 'groups' list. Note that this means that if we don't reach
-                # 'self.target_sample_surface', the group won't be processed.
+                # 'self._target_sample_surface', the group won't be processed.
                 groups.append( [group_surface,group_data] )
 
                 # Reset the current group so we can start a new group.
@@ -419,25 +441,25 @@ class DataProcessor(threading.Thread):
     def normalize_groups(self, groups):
         """Return a normalized version of sample groups `groups`. It
         converts the sums of the groups to a sample surface of exactly
-        `self.target_sample_surface`.
+        `self._target_sample_surface`.
         """
         for i, group in enumerate(groups):
             # Unpack current group.
             group_surface, group_data = group
 
             # Skip the calculations for this group if the surface
-            # is already equal to 'self.target_sample_surface'.
-            if group_surface == self.target_sample_surface:
+            # is already equal to 'self._target_sample_surface'.
+            if group_surface == self._target_sample_surface:
                 continue
 
             # Calculate the factor needed to calculate the sum for a
-            # surface of 'self.target_sample_surface' for each group.
-            factor = self.target_sample_surface / group_surface
+            # surface of 'self._target_sample_surface' for each group.
+            factor = self._target_sample_surface / group_surface
 
             # Unpack group data.
             for taxon, sum_of in group_data.iteritems():
                 # Calculate the sum if the group surface would be
-                # 'self.target_sample_surface'.
+                # 'self._target_sample_surface'.
                 new_sum_of = sum_of * factor
 
                 # Set the new sum_of value for this taxon in the current
@@ -445,15 +467,15 @@ class DataProcessor(threading.Thread):
                 groups[i][1][taxon] = new_sum_of
 
             # When done with all taxa for this group, set the value for
-            # group surface to 'self.target_sample_surface'.
-            groups[i][0] = self.target_sample_surface
+            # group surface to 'self._target_sample_surface'.
+            groups[i][0] = self._target_sample_surface
 
         # Return the normalized groups.
         return groups
 
     def __determine_biodiversities(self):
         """Calculate the biodiversity for each sample group."""
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         for ecotope in self.ecotopes:
@@ -504,7 +526,7 @@ class DataProcessor(threading.Thread):
         self.__determine_biodiversities()
 
         # Connect to the database.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # A dictionary containing the median of the biodiversities for
@@ -530,7 +552,7 @@ class DataProcessor(threading.Thread):
                 continue
 
             # Calculate the median.
-            medians[ecotope] = std.median(diversities)
+            medians[ecotope] = bioden.std.median(diversities)
 
         for ecotope in self.ecotopes:
             cursor.execute("SELECT diversity, group_id \
@@ -548,10 +570,10 @@ class DataProcessor(threading.Thread):
 
                 if smallest_difference == None:
                     smallest_difference = difference
-                    self.representative_groups[ecotope] = group_id
+                    self._representative_groups[ecotope] = group_id
                 elif difference < smallest_difference:
                     smallest_difference = difference
-                    self.representative_groups[ecotope] = group_id
+                    self._representative_groups[ecotope] = group_id
 
         # Close connection with the local database.
         cursor.close()
@@ -563,7 +585,7 @@ class CSVProcessor(DataProcessor):
     def set_reader(self, reader):
         """Set the CSV reader."""
         if isinstance(reader, csv.DictReader):
-            self.reader = reader
+            self._reader = reader
         else:
             raise TypeError("Argument 'reader' must be an instance of 'csv.DictReader'.")
 
@@ -571,8 +593,6 @@ class CSVProcessor(DataProcessor):
         """Extract the required columns from the CSV data and insert
         these into the database.
         """
-        self.pdialog_handler.add_details("Loading data...")
-
         # Create a new database file.
         self.make_db()
 
@@ -583,13 +603,13 @@ class CSVProcessor(DataProcessor):
 
         # Alter the above column names to match the ones in the CSV file.
         for i,f in enumerate(fields):
-            for name in self.reader.fieldnames:
+            for name in self._reader.fieldnames:
                 if f in name.lower():
                     fields[i] = name
                     break
 
         # Connect with the database.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # List of sample codes. Used to check which sample codes have
@@ -597,7 +617,7 @@ class CSVProcessor(DataProcessor):
         sample_codes = []
 
         # Insert CSV data into database.
-        for row in self.reader:
+        for row in self._reader:
             sample_code = int(row[fields[0]])
 
             # Insert the data into the 'data' table.
@@ -605,8 +625,8 @@ class CSVProcessor(DataProcessor):
                 (sample_code,
                 row[fields[1]].lower(), # Save ecotopes in lower case.
                 row[fields[2]],
-                std.to_float(row[fields[3]]),
-                std.to_float(row[fields[4]])
+                bioden.std.to_float(row[fields[3]]),
+                bioden.std.to_float(row[fields[4]])
                 ))
 
             # Check is the current sample code is in the list of sample
@@ -621,7 +641,7 @@ class CSVProcessor(DataProcessor):
                 # separate table because each sample code is linked
                 # to a single sample surface.
                 cursor.execute("INSERT INTO samples VALUES (?,?)",
-                    ( sample_code, std.to_float(row[fields[5]]) )
+                    ( sample_code, bioden.std.to_float(row[fields[5]]) )
                     )
 
         # Commit the transaction.
@@ -638,7 +658,7 @@ class XLSProcessor(DataProcessor):
         """Set the XSL reader."""
         if isinstance(book, xlrd.Book):
             # By default, use the first sheet in the Excel file.
-            self.reader = self.sheet = book.sheets()[0]
+            self._reader = self.sheet = book.sheets()[0]
         else:
             raise TypeError("Argument 'reader' must be an instance of 'xlrd.Book'.")
 
@@ -646,8 +666,6 @@ class XLSProcessor(DataProcessor):
         """Extract the required columns from the CSV data and insert
         these into the database.
         """
-        self.pdialog_handler.add_details("Loading data...")
-
         # Create a new database file.
         self.make_db()
 
@@ -666,7 +684,7 @@ class XLSProcessor(DataProcessor):
                     break
 
         # Connect with the database.
-        connection = sqlite.connect(self.dbfile)
+        connection = sqlite.connect(self._dbfile)
         cursor = connection.cursor()
 
         # List of sample codes. Used to check which sample codes have
@@ -690,8 +708,8 @@ class XLSProcessor(DataProcessor):
                 (sample_code,
                 row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
                 row[fields['standardised taxon']],
-                std.to_float(row[fields['density']]),
-                std.to_float(row[fields['biomass']])
+                bioden.std.to_float(row[fields['density']]),
+                bioden.std.to_float(row[fields['biomass']])
                 ))
 
             # Check if the current sample code is in the list of sample
@@ -706,7 +724,7 @@ class XLSProcessor(DataProcessor):
                 # separate table because each sample code is linked
                 # to a single sample surface.
                 cursor.execute("INSERT INTO samples VALUES (?,?)",
-                    ( sample_code, std.to_float(row[fields['sample surface']]) )
+                    ( sample_code, bioden.std.to_float(row[fields['sample surface']]) )
                     )
 
         # Commit the transaction.

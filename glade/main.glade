@@ -219,7 +219,7 @@
             <child>
               <object class="GtkLabel" id="label_output_format">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">The file format to save the output files to.</property>
+                <property name="tooltip_text" translatable="yes">The file format to save the output files in.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Format for output files:</property>
                 <property name="justify">right</property>

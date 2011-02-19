@@ -6,12 +6,12 @@
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
 #
-#  SETLyze is free software: you can redistribute it and/or modify
+#  BioDen is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SETLyze is distributed in the hope that it will be useful,
+#  BioDen is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -29,10 +29,9 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gobject
-import xlrd
 
-import std
-import processor
+import bioden.std
+import bioden.processor
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, 2011, GiMaRIS"
@@ -77,9 +76,9 @@ class MainWindow:
         self.complete_widgets()
 
         # Handle application signals.
-        self.handler1 = std.sender.connect('process-finished',
+        self.handler1 = bioden.std.sender.connect('process-finished',
             self.on_process_finished)
-        self.handler2 = std.sender.connect('load-data-failed',
+        self.handler2 = bioden.std.sender.connect('load-data-failed',
             self.on_load_data_failed)
 
     def complete_widgets(self):
@@ -132,12 +131,11 @@ class MainWindow:
         self.builder.get_object('adjustment_round').set_value(-1)
 
         # Change the background color of the warning frame.
-        # Looks good in Linux, hella ugly in Windows.
         if os.name == 'posix':
             frame_warning = self.builder.get_object('frame_warning')
             frame_warning.set_shadow_type(gtk.SHADOW_OUT)
-            color = gtk.gdk.color_parse('#EFE0CD')
-            frame_warning.modify_bg(gtk.STATE_NORMAL, color)
+            #color = gtk.gdk.color_parse('#EFE0CD')
+            #frame_warning.modify_bg(gtk.STATE_NORMAL, color)
 
     def on_combobox_output_format_changed(self, combobox, data=None):
         """Show the .xls warning message if the user selected .xls as the
@@ -160,7 +158,7 @@ class MainWindow:
 
         # Check if the input file and output folder are set.
         if not input_file:
-            self.show_message(title="No data file set",
+            self.show_message(title="No data file selected",
                 message="You didn't select the data file. Please select the data file first.",
                 type=gtk.MESSAGE_ERROR)
             return
@@ -175,35 +173,30 @@ class MainWindow:
         target_sample_surface = float(self.builder.get_object('input_sample_surface').get_text())
         decimals = int(self.builder.get_object('spinbutton_round').get_value())
 
-        # Normalize the output format.
+        # Normalize the output format name.
         if '.csv' in output_format:
             output_format = 'csv'
         elif '.xls' in output_format:
             output_format = 'xls'
 
         # Get the name of the selected file type.
-        filter_name = self.builder.get_object('chooser_input_file').get_filter().get_name()
+        self.filter_name = self.builder.get_object('chooser_input_file').get_filter().get_name()
 
         # Show the progress dialog.
         self.pd = ProgressDialog()
 
         # Set up the data processor.
-        if ".csv" in filter_name:
-            t = processor.CSVProcessor()
-            reader = csv.DictReader(open(input_file), fieldnames=None,
-                delimiter=delimiter, quotechar=quotechar)
-        elif ".xls" in filter_name:
-            t = processor.XLSProcessor()
-            reader = xlrd.open_workbook(input_file)
-
-        t.set_reader(reader)
+        if ".csv" in self.filter_name:
+            t = bioden.processor.CSVProcessor()
+            t.set_input_file(input_file, 'csv')
+        elif ".xls" in self.filter_name:
+            t = bioden.processor.XLSProcessor()
+            t.set_input_file(input_file, 'xls')
         t.set_property(property)
         t.set_output_folder(output_folder)
         t.set_progress_dialog(self.pd)
         t.set_target_sample_surface(target_sample_surface)
         t.set_output_format(output_format)
-
-        # Set 'round' if 'decimals' set to 0 or higher.
         if decimals >= 0:
             t.set_round(decimals)
 
@@ -224,14 +217,22 @@ class MainWindow:
         # Close the progress dialog.
         self.pd.dialog.destroy()
 
-        self.show_message("Loading data failed!",
-            "The data could not be loaded. This is probably caused by "
-            "an incorrect input file or the CSV file was in a different "
-            "format. If the CSV file was in a different format, "
-            "change the settings under Advanced Options accrodingly "
-            "and make sure the format matches the format described in the "
-            "manual.",
-            type=gtk.MESSAGE_ERROR)
+        if ".csv" in self.filter_name:
+            self.show_message("Loading data failed!",
+                "The data could not be loaded. This is probably caused by "
+                "an incorrect input file or the CSV file was in a different "
+                "format. If the CSV file was in a different format, "
+                "change the settings under \"CSV Input File Options\" accrodingly "
+                "and make sure the format matches the format described in the "
+                "documentation.",
+                type=gtk.MESSAGE_ERROR)
+        elif ".xls" in self.filter_name:
+            self.show_message("Loading data failed!",
+                "The data could not be loaded. This is probably caused by "
+                "an incorrect input file or the XLS file was in a different "
+                "format. Make sure the format matches the format described in "
+                "the documentation.",
+                type=gtk.MESSAGE_ERROR)
 
     def show_message(self, title, message, type=gtk.MESSAGE_INFO):
         """Show a message dialog showing that input file was not set."""

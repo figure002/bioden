@@ -58,7 +58,7 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom: 1px solid #aaa;
 }
 h1 { font-size: 188%; }
-h2 { font-size: 150%; background-color: #F2F2F2; }
+h2 { font-size: 150%; background-color: #F2F2F2; margin-top: 1em; }
 h3, h4, h5, h6 {
     border-bottom: none;
     font-weight: bold;
@@ -146,4 +146,12 @@ div.thumbinner {
     line-height: 1.4em;
     padding: 3px !important;
     font-size: 94%;
+}
+
+table, th, td {
+    border: 1px solid #314E6C;
+    border-collapse: collapse;
+    padding: 2px;
+    font-size: 90%;
+    white-space: nowrap;
 }

@@ -1,75 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Bioden Documentation</title>
+    <title>BioDen 0.3 Documentation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="./main.css" />
 </head>
 <body>
     <div id='content'>
-        <h1>Bioden Documentation</h1>
-
-        <p>Welcome to the documentation for Bioden.</p>
+        <h1>BioDen 0.3 Documentation</h1>
+        <p>Welcome! This is the documentation for BioDen 0.3, last updated 19 Feb, 2011.</p>
 
         <div class="section" id="intro">
             <h2>Introduction <a class="headerlink" href="#intro">&para;</a></h2>
         </div>
         <div>
-            <p>Bioden is a data normalizer and transponer for CSV files
+            <p>BioDen is a data normalizer and transponer for CSV files
             containing taxon biomass/density data for ecotopes. The name
-            Bioden is a combination of the words biomass and density. In
-            general the input file of Bioden includes a list of records
+            BioDen is a combination of the words biomass and density. In
+            general the input file of BioDen includes a list of records
             (rows in a table) that give species name, an abundance measure
             (biomass and/or density), a sample code, the surface sampled and
-            the ecotope (input example). This list is transformed to a table in which the rows
-            represent species (names) and the columns represent samples (output example). This
+            the ecotope (see <a href="#input-example">input example</a>).
+            This list is transformed to a table in which the rows
+            represent species (names) and the columns represent samples
+            (see <a href="#output">ouput examples</a>). This
             table can serve as the input file for various programs that conduct
             species community analyses.
             </p>
         </div>
 
         <div class="section" id="requirements">
-            <h2>Requirements <a class="headerlink" href="#requirements">&para;</a></h2>
+            <h2>Disclaimer <a class="headerlink" href="#requirements">&para;</a></h2>
         </div>
         <div>
-            <p>Bioden has the following third-party dependencies:</p>
-
-            <ul>
-                <li><a href="http://www.python.org/about/legal/">Python</a></li>
-                <li><a href="http://www.gtk.org/index.php">GTK+</a></li>
-                <li><a href="http://www.pygtk.org/about.html">PyGTK</a></li>
-                <li><a href="http://cairographics.org/pycairo/">PyCairo</a></li>
-                <li><a href="http://www.pygtk.org/downloads.html">PyGObject</a></li>
-            </ul>
-
-            <p>The Windows&reg; installer comes bundled with these
-            dependencies. The third party tools bundled with Bioden are
-            property of their individual authors and are governed by
-            their individual applicable license.</p>
+            <p>The Windows<sup>&reg;</sup> installer for BioDen comes bundled with third
+            party dependencies. The third party tools bundled with BioDen are
+            property of their individual authors and are governed by their
+            individual applicable license.</p>
         </div>
 
         <div class="section" id="installation">
-            <h2>Installing Bioden <a class="headerlink" href="#installation">&para;</a></h2>
+            <h2>Installing BioDen <a class="headerlink" href="#installation">&para;</a></h2>
         </div>
         <div>
-            <h3>Microsoft&reg; Windows&reg;</h3>
+            <h3>Microsoft<sup>&reg;</sup> Windows<sup>&reg;</sup></h3>
             <p>For Windows users, an installer is available that
-            includes the Bioden package together with necessary
-            pre-requisites listed under <a class="headerlink" href="#requirements">Requirements</a>.</p>
+            includes the BioDen package together with necessary
+            pre-requisites.</p>
 
             <h3>GNU/Linux</h3>
-            <p>GNU/Linux users can use the source package for Bioden.
-            The source package doesn't contain the listed pre-requisites
-            though. You'll have to install missing requirements manually
-            with your package manager.</p>
+            <p>GNU/Linux users can use the source package for BioDen.
+            The source package doesn't contain the pre-requisites. You'll have
+            to install missing requirements manually with your package manager.
+            See the INSTALL file for more information.</p>
         </div>
 
         <div class="section" id="using-bioden">
-            <h2>Using Bioden <a class="headerlink" href="#using-bioden">&para;</a></h2>
+            <h2>Using BioDen <a class="headerlink" href="#using-bioden">&para;</a></h2>
         </div>
         <div>
             <p>On Windows, go to Start menu > All Programs > GiMaRIS >
-            bioden > bioden.</p>
+            BioDen > BioDen.</p>
 
             <p>Linux users can just run <code>bioden.pyw</code> after
             unpacking the archive.</p>
@@ -79,7 +70,7 @@
 
             <dl>
                 <dt>Select input data file</dt>
-                <dd>The CSV file containing the biomass and density
+                <dd>The CSV or XLS file containing the biomass and density
                 data to be processed. This file must be in a specific
                 format. This format is described in the
                 <a class="headerlink" href="#input-file-format">Input
@@ -87,18 +78,36 @@
 
                 <dt>Select output folder</dt>
                 <dd>Select the folder to which all output files should
-                be saved. The output file are described in the
+                be saved. The output files are described in the
                 <a class="headerlink" href="#output">Output Files</a>
                 section.</dd>
 
                 <dt>Property for calculations</dt>
-                <dd>The property to perform the calculations on. Can
-                be either 'biomass' or 'density'. Note that the input
-                data file must have the specified property stored.</dd>
+                <dd>The property to perform the calculations on. You have a
+                choice between "biomass" and "density". Note that the input
+                data file must contain data for the specified property. If
+                this is not the case, this will result in an error message.</dd>
+
+                <dt>Format for output files</dt>
+                <dd>The format to save the output files in. You have a choice
+                between "Comma Separated Values (.csv)" and
+                "Microsoft Excel 97/2000/XP (.xls)".
+                Note: Excel (.xls) files support a maximum of 256 columns.
+                Columns that exceed this limit won't be exported!</dd>
 
                 <dt>Advanced Options</dt>
-                <dd>Clicking this toggle button shows/hides the
-                advanced options.</dd>
+                <dd>Clicking this toggle button shows/hides the advanced options.</dd>
+
+                <dt>Target sample surface:</dt>
+                <dd>The sample surface used for AMBI files. Default is 0.2.</dd>
+
+                <dt>Round values to n decimals:</dt>
+                <dd>Number of decimals to round values in the output
+                files to. Value "-1" (default) means do not round.</dd>
+
+                <dt>CSV Input File Options</dt>
+                <dd>Clicking this toggle button shows/hides the options for the
+                CSV input file.</dd>
 
                 <dt>Field delimiter of the input file:</dt>
                 <dd>A one-character string used to separate fields in
@@ -113,10 +122,6 @@
                 <dd>A one-character string used to separate fields in
                 the input CSV file. It defaults to a double quote (").</dd>
 
-                <dt>Round values to n decimals:</dt>
-                <dd>Number of decimals to round values in the output
-                files to. Value "-1" (default) means do not round.</dd>
-
                 <dt>Process Data</dt>
                 <dd>Clicking this button starts the data processing.
                 While it's processing the data, a progress dialog is
@@ -130,87 +135,83 @@
             <h2>Input File Format <a class="headerlink" href="#input-file-format">&para;</a></h2>
         </div>
         <div>
-            <p>The input data file must be a CSV file in a specific
-            format. The default settings for Bioden have been set for
-            the format in which Excel creates CSV files. This means that
-            by default Bioden expects a semicolon (;) as a field
-            separator. The quote character defaults to a double quote (").
-            The Advanced Options in Bioden allow you to change these defaults,
-            should your input CSV file use a different field delimiter
-            or quotechar.</p>
+            <p>The input data file must be a CSV or XLS file in a specific
+            format.</p>
 
-            <p>Except for the CSV format, Bioden also expects a format
-            in which the data has been stored in the CSV file. Bioden
-            expects the following content format:</p>
+            <P>For CSV input, the default settings for BioDen have been set for
+            the format in which Excel creates CSV files. This means that
+            by default BioDen expects a semicolon (;) as a field
+            separator. The quote character defaults to a double quote (").
+            The "CSV Input File Options" in BioDen allow you to change these
+            defaults, should your input CSV file use a different field delimiter
+            or quote character.</p>
+
+            <p>BioDen also expects a format for the data stored in the CSV or
+            XLS file. BioDen expects the following data format:</p>
 
             <ol>
-                <li>The first line in the CSV file must be the header.
-                The header contains the column names. Bioden expects
+                <li>The first row in the CSV/XLS file must be the header.
+                The header contains the column names. BioDen expects
                 at least the following six columns: "compiled ecotope",
                 "sample code", "standardised taxon", "density",
                 "biomass", and "sample surface".</li>
 
-                <li>Bioden isn't very strict with the column names. The
+                <li>BioDen isn't very strict with the column names. The
                 column names aren't case sensitive. So a column with
-                name "BiOmAsS" works just as good. Also Bioden uses any
+                name "BioMass" works just as good. Also BioDen uses any
                 column that <i>contains</i> any of the expected
                 column names. So a column with name "Sum Of Density"
                 would be used as the "density" column, because it
-                contains the string "density".</li>
+                contains the name "density".</li>
 
-                <li>Bioden ignores the columns that don't match
-                the expected column names. So it's OK if the input file
+                <li>BioDen ignores the columns that don't match
+                the expected column names. So it's alright if the input file
                 contains other columns.</li>
 
-                <li>The header line must be followed by the data lines.</li>
+                <li>The header row must be followed by the actual data rows.</li>
 
-                <li>Bioden automatically corrects numbers that have been
+                <li>BioDen automatically corrects numbers that have been
                 stored in non-English format. This means that commas
                 are replaced by dots (e.g. <code>12,5</code> will be
                 converted to <code>12.5</code>).</li>
             </ol>
 
-            <p>Below is an example of an input data file in CSV format
-            with a header containing all required columns:</p>
+            <div id="input-example">&nbsp;</div>
+            <p>Below is an example of an input data file with a header
+            containing the required column names:</p>
 
-            <pre>
-"compiled ecotope";"sample code";"standardised taxon";"density";"biomass";"sample surface"
-"Polyhaline_Subtidal_Sand";"1971";"Abludomelita obtusata";200;0.02558;0.015
-"Polyhaline_Subtidal_Sand";"2209";"Abludomelita obtusata";66.67;0.01838;0.015
-"Polyhaline_Subtidal_Sand";"2211";"Abludomelita obtusata";600;0.15587;0.015
-"Polyhaline_Subtidal_Sand";"3393";"Abludomelita obtusata";66.67;0.02238;0.015
-"Polyhaline_Intertidal_mud";"49";"Abra alba";22.66;0.1427;0.0149
-"Polyhaline_Subtidal_Sand";"81";"Abra alba";66.67;0.05333;0.015
-"Polyhaline_Subtidal_Sand";"84";"Abra alba";200.01;0.19999;0.015
-"Polyhaline_Subtidal_Sand";"87";"Abra alba";1666.67;4.46666;0.015
-"Polyhaline_Subtidal_Sand";"88";"Abra alba";66.67;0.3;0.015
-"Polyhaline_Subtidal_Mud";"59";"Abra alba";200;0.23333;0.015
-"Polyhaline_Subtidal_Mud";"76";"Abra alba";66.67;0.14;0.015
-"Polyhaline_Intertidal_Sand";"290";"Abra alba";11.33;0.09117;0.0149
-"Polyhaline_Intertidal_Mud";"285";"Abra alba";202.02;0.14218;0.0149
-"Polyhaline_Intertidal_Mud";"538";"Abra alba";133.33;0.0868;0.015
-"Polyhaline_Intertidal_Mud";"1973";"Abra alba";133.33;0.30667;0.015
-"Polyhaline_Subtidal_Sand";"2209";"Abra alba";3000;1.1379;0.015
-"Polyhaline_Subtidal_Sand";"2210";"Abra alba";66.67;0.026;0.015
-"Polyhaline_Subtidal_Sand";"2211";"Abra alba";66.67;0.026;0.015
-"Polyhaline_Subtidal_Sand";"2443";"Abra alba";66.67;0.07921;0.015
-"Polyhaline_Subtidal_Mud";"2484";"Abra alba";66.67;0.00384;0.015
-"Polyhaline_Intertidal_Sand";"2975";"Abra alba";66.67;0.03878;0.015
-"Polyhaline_Intertidal_Sand";"3245";"Abra alba";66.67;0.0056;0.015
-"Polyhaline_Intertidal_Mud";"3166";"Abra alba";133.33;0.00173;0.015
-"Polyhaline_Subtidal_Sand";"3614";"Abra alba";66.67;0.04703;0.015
-            </pre>
-            </p>
+            <table>
+                <tr>
+                    <th>compiled ecotope</th>
+                    <th>sample code</th>
+                    <th>standardised taxon</th>
+                    <th>density</th>
+                    <th>biomass</th>
+                    <th>sample surface</th>
+                </tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>1971</td><td>Abludomelita obtusata</td><td>200</td><td>0.02558</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>2209</td><td>Abludomelita obtusata</td><td>66.67</td><td>0.01838</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>2211</td><td>Abludomelita obtusata</td><td>600</td><td>0.15587</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>3393</td><td>Abludomelita obtusata</td><td>66.67</td><td>0.02238</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Intertidal_mud</td><td>49</td><td>Abra alba</td><td>22.66</td><td>0.1427</td><td>0.0149</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>81</td><td>Abra alba</td><td>66.67</td><td>0.05333</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>84</td><td>Abra alba</td><td>200.01</td><td>0.19999</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>87</td><td>Abra alba</td><td>1666.67</td><td>4.46666</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Sand</td><td>88</td><td>Abra alba</td><td>66.67</td><td>0.3</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Mud</td><td>59</td><td>Abra alba</td><td>200</td><td>0.23333</td><td>0.015</td></tr>
+                <tr><td>Polyhaline_Subtidal_Mud</td><td>76</td><td>Abra alba</td><td>66.67</td><td>0.14</td><td>0.015</td></tr>
+            </table>
         </div>
 
         <div class="section" id="output">
             <h2>Output Files <a class="headerlink" href="#output">&para;</a></h2>
         </div>
         <div>
-            <p>Bioden produces several output files in the specified output
-            folder. All output files are saved in CSV (Comma Separated
-            Values) format, and can be opened with any spreadsheet
-            application (e.g. Microsoft&reg; Excel&reg;, OpenOffice.org Calc
+            <p>BioDen produces several output files in the specified output
+            folder in the spcified format. Output files are saved in either
+            CSV (Comma Separated Values) format or in XLS
+            (Microsoft Excel 97/2000/XP) format, and can be opened with any
+            spreadsheet application (e.g. Microsoft<sup>&reg;</sup> Excel<sup>&reg;</sup>, OpenOffice.org Calc
             <a class="headerlink" href="#viewing-output-files">&para;</a>).</p>
 
             <p>The output files are described below:</p>
@@ -218,128 +219,54 @@
             <dl>
                 <dt>Raw ecotope files (<code>raw_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
                 <dd>The original data is split by ecotope. So one data
-                file per ecotope is exported. The un-grouped values are
-                exported, but the data has been transponed/re-ordered.
+                file per ecotope is exported. The non-grouped values are
+                exported, but the data has been re-ordered.
                 <br />
-                Each column is a sample, and each row contains the values
-                for a taxon.
-                <br />
-                Example output:
-                <pre>
-Property:,biomass
-Ecotope:,Mesohaline_Subtidal_Mud
-Sample code:,121,362,587,617,2269,2508,2509,2510,2521,2752,2756,2761,2989,3230,3231,3688,3700,3709,5883,5904,5921,7643,7650,7667,7674,7689,7731,7851,7868,7875,7892,7899,7915,7922,7939,7946
-Sample surface:,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.015,0.0624,0.015,0.015,0.015,0.015,0.015,0.022266038,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.105,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469,0.023856469
-""
-Abludomelita obtusata,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Abra alba,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Abra nitida,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Abra tenuis,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Achelia echinata,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Achelia longipes,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Alitta succinea,,,,,1.30907,,,,,,,,,,,,,,,,,,,,0.0019,0.0015333,,0.0008,,,,,,,,
-Alitta virens,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-AMPHIPODA,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-                </pre>
+                Each column is a sample, and each row contains the abundance
+                measures for a species (see
+                <a href="output_raw.html">example output</a>).
                 </dd>
 
                 <dt>Grouped files (<code>grouped_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
-                <dd>One data file per ecotope is exported. Each file
-                contains the calculated sample groups for that ecotope.
-                Sample groups were created by summing samples for
-                that ecotope until the sum of the sample surfaces
-                reached 0.2 or higher. The groups have <i>not</i>
-                been corrected to a surface of 0.2.
+                <dd>One data file per ecotope is exported. Each file contains
+                the calculated sample groups for that ecotope. Sample groups
+                were created by summing samples for that ecotope until the sum
+                of the sample surfaces reached the target sample surface
+                (default is 0.2) or higher. The groups have <i>not</i>
+                been corrected to the exact target sample surface.
                 <br />
-                Each column is a sample group, and each row contains
-                the values for a taxon.
-                <br />
-                Example output:
-                <pre>
-Property:,biomass
-Ecotope:,Mesohaline_Intertidal_Mud
-Sample group:,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
-Group surface:,0.2092,0.21,0.2004,0.21465,0.21465,0.21465,0.21465,0.21465,0.229690148,0.307121112,0.24,0.24,0.208346497,0.212234218,0.214708221,0.214708221,0.214708221,0.214708221
-""
-Abludomelita obtusata,,,,,,,,,,,,,,,,,,
-Abra alba,,,,,,,,,,,,,,,,,,
-Abra nitida,,,,,,,,,,,,,,,,,,
-Abra tenuis,,,,,,,,,,,,,,,,,,
-Achelia echinata,,,,,,,,,,,,,,,,,,
-Achelia longipes,,,,,,,,,,,,,,,,,,
-Alitta succinea,1.250968217,0.13219,0.542735707,1.653383108,0.311059262,0.36929538,0.018758749,0.006626225,0.103873075,0.0758,0.0545,0.067,,,0.0173333,0.0358,0.0006,
-Alitta virens,,,,,,,,,,,,,,,,,,
-AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
-                </pre></dd>
+                Each column is a sample group, and each row contains the
+                abundance measures for a species (see
+                <a href="output_grouped.html">example output</a>).
+                </dd>
 
-                <dt>AMBI group files (<code>ambi_&lt;biomass&gt;_&lt;ecotope&gt;.csv</code>)</dt>
-                <dd>One data file per ecotope is exported. Each file
-                contains the calculated sample groups for that ecotope.
-                Sample groups were created by summing samples for
-                that ecotope until the sum of the sample surfaces
-                reached 0.2 or higher. The groups <i>have</i>
-                been corrected to a surface of 0.2. This means that
-                each sample group has a surface of exactly 0.2.
+                <dt>AMBI group files (<code>ambi_&lt;property&gt;_&lt;ecotope&gt;.csv</code>)</dt>
+                <dd>One data file per ecotope is exported. Each file contains
+                the calculated sample groups for that ecotope. Sample groups
+                were created by summing samples for that ecotope until the sum
+                of the sample surfaces reached the target sample surface
+                (default is 0.2) or higher. The groups have been corrected to
+                the exact target sample surface. This means that each sample
+                group has a surface of exactly the target sample surface.
                 <br />
-                Each column is a sample group, and each row contains
-                the values for a taxon.
-                <br />
-                Example output:
-                <pre>
-Property:,biomass
-Ecotope:,Mesohaline_Intertidal_Mud
-Sample group:,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
-Group surface:,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-""
-Abludomelita obtusata,,,,,,,,,,,,,,,,,,
-Abra alba,,,,,,,,,,,,,,,,,,
-Abra nitida,,,,,,,,,,,,,,,,,,
-Abra tenuis,,,,,,,,,,,,,,,,,,
-Achelia echinata,,,,,,,,,,,,,,,,,,
-Achelia longipes,,,,,,,,,,,,,,,,,,
-Alitta succinea,1.19595431836,0.125895238095,0.541652402196,1.54053865176,0.289829268111,0.344090733753,0.0174784523643,0.00617398089914,0.0904462606729,0.0493616342468,0.0454166666667,0.0558333333333,,,0.0161459118047,0.0333475819727,0.000558898021888,
-Alitta virens,,,,,,,,,,,,,,,,,,
-AMPHIPODA,,,,,,,,0.0,,,,,,,,,,
-                </pre></dd>
+                Each column is a sample group, and each row contains the
+                abundance measures for a species (see
+                <a href="output_ambi.html">example output</a>).
+                </dd>
 
                 <dt>Representatives data file (<code>representatives_&lt;property&gt;.csv</code>)</dt>
-                <dd>One data file is exported. The file contains
-                one normalized sample group for each ecotope. The
-                sample group that represents the ecotope best is
-                exported.
+                <dd>One data file is exported. The file contains one normalized
+                sample group for each ecotope. The sample group that best
+                represents the ecotope is exported. The biodiversity for
+                all sample groups are calculated, and the group that comes
+                closest to the median of the biodiversities is considered
+                the representative sample group for an ecotope.
                 <br />
-                Each column contains the values from the most
-                representative sample group for an ecotope, and each
-                row contains the values for a taxon.
-                <br />
-                Example output:
-                <pre>
-Property:,biomass
-Ecotope:,Polyhaline_Subtidal_Sand,Polyhaline_Intertidal_mud,Polyhaline_Subtidal_Mud,Polyhaline_Intertidal_Sand,Polyhaline_Intertidal_Mud,Mesohaline_Subtidal_Sand,Mesohaline_Intertidal_Mud,Mesohaline_Intertidal_Sand,Mesohaline_Subtidal_Mud
-Group surface:,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2
-""
-Abludomelita obtusata,,,,,,,,,
-Abra alba,,0.136164122137,,,,,,,
-Abra nitida,,,,,,,,,
-Abra tenuis,,,,,,,,,
-Achelia echinata,,,,,,,,,
-Achelia longipes,,,,,,,,,
-Alitta succinea,,0.357881604962,,3.04135238095,1.83871583788,0.104833333333,0.344090733753,1.59527619048,1.08009075908
-Alitta virens,,,,,,,,,
-AMPHIPODA,,,,,,,,,
-Amphitrite,,,,,,,,,
-Anaitides,,,,,,,,,
-Anaitides mucosa,,,0.0,,1.89436169672,,,,
-Angulus tenuis,,,,,,,,,
-Anoplodactylus petiolatus,,,,,,,,,
-Anoplodactylus pygmaeus,,,,,,,,,
-Antinoella finmarchica,,,,,,,,,
-Aphelochaeta marioni,0.00168571428571,7.99658396947,0.0,0.636476190476,1.44548118612,,,,
-Apocorophium lacustre,,,,,,,,,0.432640264026
-Arenicola,,,,,,,,,
-Arenicola defodiens,,,,,,,,,
-Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
-                </pre></dd>
+                Each column contains the values from the most representative
+                sample group for an ecotope, and each row contains the
+                abundance measures for a species (see
+                <a href="output_representatives.html">example output</a>).
+                </dd>
             </dl>
         </div>
 
@@ -347,50 +274,48 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
             <h2>Viewing Output Files <a class="headerlink" href="#viewing-output-files">&para;</a></h2>
         </div>
         <div>
-            <p>The output files created by Bioden are stored in CSV (Comma
-            Separated Values) format. You can view these output files
-            in any spreadsheet application (e.g. Microsoft&reg; Excel&reg;,
-            OpenOffice.org Calc). Your spreadsheet application however
-            does need to know some basic information about the CSV file
+            <p>The output files created by BioDen are stored in either CSV
+            format or XLS format. You can view these output files
+            in any spreadsheet application (e.g. Microsoft<sup>&reg;</sup> Excel<sup>&reg;</sup>,
+            OpenOffice.org Calc).</p>
+
+            <p>Double clicking an XLS file should open it in your spreadsheet
+            application. To open a CSV file however, your spreadsheet application
+            needs to know some basic information about the CSV file
             before it can view it properly. For example, it needs to know
             the character used as a field delimiter, which is a comma.
             So you need to tell your spreadsheet application
             to use the comma character as the field delimiter, along
-            some other properties. I will explain how to do this for
+            some other properties. Below is explained how to do this with
             the two most popular spreadsheet applications.</p>
 
-            <h3>Microsoft&reg; Excel&reg; 2007</h3>
+            <h3>Microsoft<sup>&reg;</sup> Excel<sup>&reg;</sup> 2007</h3>
             <ol>
-                <li>Start Microsoft&reg; Excel&reg;. Make sure you have open the
-                Excel&reg; 2007 worksheet that you would like to import the
-                ouput data file into.</li>
-                <li>Go to the "Data/Gegevens" tab.</li>
-                <li>Click on the "From Text/Van text" button. This will open the
+                <li>Start Microsoft<sup>&reg;</sup> Excel<sup>&reg;</sup>.
+                Make sure you have open the Excel<sup>&reg;</sup> 2007 worksheet
+                that you would like to import the ouput data file into.</li>
+                <li>Go to the "Data" tab.</li>
+                <li>Click on the "From Text" button. This will open the
                 file select browser window. Navigate to where the output
-                files are stored. Then select one of the output files.
-                All output files have the extension ".csv".</li>
+                files are stored. Then select one of the output CSV files.</li>
                 <li>After selecting an output file, the "Text Import
-                Wizard/Wizard Text importeren" window is displayed. In
-                that window set:
+                Wizard" window is displayed. In that window set:
                     <ul>
-                        <li>"Original Data Type/Oorspronkelijk gegevenstype" to
-                        "Delimited/Gescheiden"</li>
-                        <li>"File origin/Oorspronkelijk bestand"
-                        to "United States/Verenigde Staten"</li>
+                        <li>"Original Data Type" to "Delimited"</li>
+                        <li>"File origin" to "United States"</li>
                     </ul>
-                Click the "Next/Volgende" button.
+                Click the "Next" button.
                 </li>
-                <li>In the next window that appears we need to change
+                <li>In the next window that appears you need to change
                 the Delimiter from Tab to Comma. Uncheck "Tab" and
-                check "Comma/Komma" under "Delimiters/Scheidingstekens".</li>
-                <li>Press "Finish/Voltooien". The data from the output file
+                check "Comma" under "Delimiters".</li>
+                <li>Press "Finish". The data from the output file
                 should now be displayed in the correct columns.</li>
             </ol>
 
             <h3>OpenOffice.org Calc</h3>
             <ol>
-                <li>Go to the folder containing the output files.</li>
-                <li>Right-click on an output file, and select
+                <li>Right-click on an output CSV file, and select
                 "Open With > OpenOffice.org Calc". The "Text Import"
                 window should now appear.</li>
                 <li>In the Text Import window, set:
@@ -408,12 +333,12 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
             <h2>Copying Permission Statement <a class="headerlink" href="#license">&para;</a></h2>
         </div>
         <div>
-            <p>Bioden is free software: you can redistribute it and/or modify
+            <p>BioDen is free software: you can redistribute it and/or modify
             it under the terms of the GNU General Public License as published by
             the Free Software Foundation, either version 3 of the License, or
             (at your option) any later version.</p>
 
-            <p>Bioden is distributed in the hope that it will be useful,
+            <p>BioDen is distributed in the hope that it will be useful,
             but WITHOUT ANY WARRANTY; without even the implied warranty of
             MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
             GNU General Public License for more details.</p>
@@ -431,10 +356,10 @@ Arenicola marina,,7.85649727767,,3.62316190476,20.2539614843,,,,
             application configuration is incorrect. Reinstalling the
             application my fix this problem."</dt>
             <dd>This error is most likely caused by a missing DLL.
-            The installer for Bioden has the option to install the
+            The installer for BioDen has the option to install the
             required DLL. To fix this problem, run the installer for
-            Bioden and make sure that the "Microsoft Visual C++" option
-            is checked. This will install the required DLL for Bioden.</dd>
+            BioDen and make sure that the "Microsoft Visual C++" option
+            is checked. This will install the required DLL for BioDen.</dd>
         </dl>
 
     </div>

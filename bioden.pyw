@@ -6,12 +6,12 @@
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
 #
-#  SETLyze is free software: you can redistribute it and/or modify
+#  BioDen is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SETLyze is distributed in the hope that it will be useful,
+#  BioDen is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -28,7 +28,7 @@ pygtk.require('2.0')
 import gtk
 import gobject
 
-import gui
+import bioden.gui
 
 gobject.threads_init()
 
@@ -50,6 +50,6 @@ __status__ = "Production"
 __date__ = "2011/02/18"
 
 if __name__ == '__main__':
-    gui.MainWindow()
+    bioden.gui.MainWindow()
     gtk.main()
     sys.exit()
