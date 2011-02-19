@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import glob
-
-#from distutils.core import setup
 from setuptools import setup
 
 setup(
@@ -15,7 +12,7 @@ setup(
     license='GPL3',
     platforms=['GNU/Linux','Windows'],
     url='http://www.gimaris.com/',
-    keywords = 'gimaris invasive species settlement setl analysis',
+    keywords = 'gimaris ecotope biomass density',
     classifiers = [
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
@@ -34,14 +31,4 @@ setup(
         'xlrd',
         'xlwt',
         ],
-
-    """
-    scripts=['bioden.pyw'],
-    packages = ['bioden'],
-    data_files=[
-        ('glade', glob.glob('glade/*.*')),
-        ('docs', glob.glob('docs/*.*')),
-        ('.',['COPYING','INSTALL','README']),
-        ],
-    """
 )

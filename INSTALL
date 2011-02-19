@@ -26,6 +26,6 @@ with the following command: ::
 Installation
 ============
 
-No decent Linux installer for BioDen is available yet. Don't use 'setup.py' to
-install it. For now, you can just run BioDen by (double) clicking 'bioden.pyw'
-in the source directory after unpacking the source package.
+No decent Linux installer for BioDen is available yet. For now, you can just
+run BioDen by (double) clicking 'bioden.pyw' in the source directory after
+unpacking the source package.

@@ -1,4 +1,5 @@
-include bioden.pyw setup.py COPYING
+include bioden.pyw COPYING README INSTALL
+exclude setup.py
 recursive-include bioden *
 recursive-include docs *
 recursive-include glade *
