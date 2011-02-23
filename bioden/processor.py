@@ -62,6 +62,7 @@ class DataProcessor(threading.Thread):
             'biomass': 'sum_of_biomass'}
         self.ecotopes = []
         self.taxa = []
+        self.csv_dialect = csv.excel
 
         # Set the path to the database file.
         self.set_directives()
@@ -73,11 +74,16 @@ class DataProcessor(threading.Thread):
             raise ValueError("Possible values for 'type' are 'csv' and 'xls', not '%s'." % type)
         self._input_file = (filename, type)
 
+    def set_csv_dialect(self, delimiter, quotechar):
+        self.csv_dialect = csv.excel
+        self.csv_dialect.delimiter = delimiter
+        self.csv_dialect.quotechar = quotechar
+
     def create_reader(self):
         """Set a file reader from the input file and type."""
         if self._input_file[1] == "csv":
-            reader = csv.DictReader(open(self._input_file[0]), fieldnames=None,
-                delimiter=delimiter, quotechar=quotechar)
+            reader = csv.DictReader(open(self._input_file[0]), dialect=self.csv_dialect,
+                fieldnames=None)
             self.set_reader(reader)
         elif self._input_file[1] == "xls":
             book = xlrd.open_workbook(self._input_file[0])
@@ -145,9 +151,9 @@ class DataProcessor(threading.Thread):
 
             # Load the data.
             self.load_data()
-        except:
+        except Exception as strerror:
             # Emit the signal that the process has failed.
-            gobject.idle_add(bioden.std.sender.emit, 'load-data-failed')
+            gobject.idle_add(bioden.std.sender.emit, 'load-data-failed', strerror)
             return
 
         # Pre-process some data. This will populate self.ecotopes, which
@@ -596,16 +602,18 @@ class CSVProcessor(DataProcessor):
         # Create a new database file.
         self.make_db()
 
-        # The column names.
-        fields = ['sample code', 'compiled ecotope',
-            'standardised taxon', 'density', 'biomass',
-            'sample surface']
+        # The required field names.
+        fields = {'sample code': None, 'compiled ecotope': None,
+            'standardised taxon': None, 'density': None, 'biomass': None,
+            'sample surface': None}
 
-        # Alter the above column names to match the ones in the CSV file.
-        for i,f in enumerate(fields):
-            for name in self._reader.fieldnames:
+        # Update the values in the 'fields' dictionary to the index number
+        # for the corresponding field in the CSV file.
+        fieldnames = self._reader.fieldnames
+        for f in fields:
+            for name in fieldnames:
                 if f in name.lower():
-                    fields[i] = name
+                    fields[f] = name
                     break
 
         # Connect with the database.
@@ -618,16 +626,29 @@ class CSVProcessor(DataProcessor):
 
         # Insert CSV data into database.
         for row in self._reader:
-            sample_code = int(row[fields[0]])
+            sample_code = int(row[fields['sample code']])
 
             # Insert the data into the 'data' table.
-            cursor.execute("INSERT INTO data VALUES (null,?,?,?,?,?)",
-                (sample_code,
-                row[fields[1]].lower(), # Save ecotopes in lower case.
-                row[fields[2]],
-                bioden.std.to_float(row[fields[3]]),
-                bioden.std.to_float(row[fields[4]])
-                ))
+            if self._property == 'density':
+                if not fields['density']:
+                    raise ValueError("The data file is missing the 'density' column.")
+
+                cursor.execute("INSERT INTO data VALUES (null,?,?,?,?,null)",
+                    (sample_code,
+                    row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
+                    row[fields['standardised taxon']],
+                    bioden.std.to_float(row[fields['density']])
+                    ))
+            elif self._property == 'biomass':
+                if not fields['biomass']:
+                    raise ValueError("The data file is missing the 'biomass' column.")
+
+                cursor.execute("INSERT INTO data VALUES (null,?,?,?,null,?)",
+                    (sample_code,
+                    row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
+                    row[fields['standardised taxon']],
+                    bioden.std.to_float(row[fields['biomass']])
+                    ))
 
             # Check is the current sample code is in the list of sample
             # codes.
@@ -641,7 +662,7 @@ class CSVProcessor(DataProcessor):
                 # separate table because each sample code is linked
                 # to a single sample surface.
                 cursor.execute("INSERT INTO samples VALUES (?,?)",
-                    ( sample_code, bioden.std.to_float(row[fields[5]]) )
+                    ( sample_code, bioden.std.to_float(row[fields['sample surface']]) )
                     )
 
         # Commit the transaction.
@@ -660,7 +681,7 @@ class XLSProcessor(DataProcessor):
             # By default, use the first sheet in the Excel file.
             self._reader = self.sheet = book.sheets()[0]
         else:
-            raise TypeError("Argument 'reader' must be an instance of 'xlrd.Book'.")
+            raise TypeError("Argument 'book' must be an instance of 'xlrd.Book'.")
 
     def load_data(self):
         """Extract the required columns from the CSV data and insert
@@ -670,9 +691,9 @@ class XLSProcessor(DataProcessor):
         self.make_db()
 
         # The required field names.
-        fields = {'sample code': -1, 'compiled ecotope': -1,
-            'standardised taxon': -1, 'density': -1, 'biomass': -1,
-            'sample surface': -1}
+        fields = {'sample code': None, 'compiled ecotope': None,
+            'standardised taxon': None, 'density': None, 'biomass': None,
+            'sample surface': None}
 
         # Update the values in the 'fields' dictionary to the index number
         # for the corresponding field in the XSL file.
@@ -704,13 +725,26 @@ class XLSProcessor(DataProcessor):
             sample_code = int(row[fields['sample code']])
 
             # Insert the data into the 'data' table.
-            cursor.execute("INSERT INTO data VALUES (null,?,?,?,?,?)",
-                (sample_code,
-                row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
-                row[fields['standardised taxon']],
-                bioden.std.to_float(row[fields['density']]),
-                bioden.std.to_float(row[fields['biomass']])
-                ))
+            if self._property == 'density':
+                if not fields['density']:
+                    raise ValueError("The data file is missing the 'density' column.")
+
+                cursor.execute("INSERT INTO data VALUES (null,?,?,?,?,null)",
+                    (sample_code,
+                    row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
+                    row[fields['standardised taxon']],
+                    bioden.std.to_float(row[fields['density']])
+                    ))
+            elif self._property == 'biomass':
+                if not fields['biomass']:
+                    raise ValueError("The data file is missing the 'biomass' column.")
+
+                cursor.execute("INSERT INTO data VALUES (null,?,?,?,null,?)",
+                    (sample_code,
+                    row[fields['compiled ecotope']].lower(), # Save ecotopes in lower case.
+                    row[fields['standardised taxon']],
+                    bioden.std.to_float(row[fields['biomass']])
+                    ))
 
             # Check if the current sample code is in the list of sample
             # codes.

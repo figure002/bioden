@@ -58,13 +58,36 @@ def median(values):
 
 class Sender(gobject.GObject):
     """Custom GObject for emitting custom signals."""
+    __gproperties__ = {
+        'strerror' : (gobject.TYPE_STRING, # type
+            "Error message", # nick name
+            "The error message returned by a function or class.", # description
+            '', # default value
+            gobject.PARAM_READWRITE), # flags
+    }
+
     __gsignals__ = {
         'process-finished': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
-        'load-data-failed': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        'load-data-failed': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
     }
 
     def __init__(self):
         gobject.GObject.__init__(self)
+        self.strerror = ''
+
+    def do_get_property(self, property):
+        if property.name == 'strerror':
+            return self.strerror
+        else:
+            raise AttributeError('Unknown property %s' % property.name)
+
+    def do_set_property(self, property, value):
+        if property.name == 'strerror':
+            self.strerror = value
+        else:
+            raise AttributeError('Unknown property %s' % property.name)
+
+
 
 class ProgressDialogHandler:
     """This class allows you to control the progress dialog from a separate

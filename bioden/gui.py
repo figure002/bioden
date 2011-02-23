@@ -188,6 +188,7 @@ class MainWindow:
         # Set up the data processor.
         if ".csv" in self.filter_name:
             t = bioden.processor.CSVProcessor()
+            t.set_csv_dialect(delimiter, quotechar)
             t.set_input_file(input_file, 'csv')
         elif ".xls" in self.filter_name:
             t = bioden.processor.XLSProcessor()
@@ -211,28 +212,36 @@ class MainWindow:
             "The data was successfully processed. The output files "
             "have been saved to '%s'." % output_folder)
 
-    def on_load_data_failed(self, sender):
+    def on_load_data_failed(self, sender, strerror, data=None):
         """Show a error dialog showing that loading the data has failed."""
 
         # Close the progress dialog.
         self.pd.dialog.destroy()
 
+        # Build an error dialog.
+        builder = gtk.Builder()
+        builder.add_from_file('glade/errdialog.glade')
+
+        dialog = builder.get_object('error_dialog')
+        textbuffer = builder.get_object('textbuffer_details')
+
         if ".csv" in self.filter_name:
-            self.show_message("Loading data failed!",
-                "The data could not be loaded. This is probably caused by "
+            message = ("The data could not be loaded. This is probably caused by "
                 "an incorrect input file or the CSV file was in a different "
                 "format. If the CSV file was in a different format, "
                 "change the settings under \"CSV Input File Options\" accrodingly "
                 "and make sure the format matches the format described in the "
-                "documentation.",
-                type=gtk.MESSAGE_ERROR)
+                "documentation.")
         elif ".xls" in self.filter_name:
-            self.show_message("Loading data failed!",
-                "The data could not be loaded. This is probably caused by "
+            message = ("The data could not be loaded. This is probably caused by "
                 "an incorrect input file or the XLS file was in a different "
                 "format. Make sure the format matches the format described in "
-                "the documentation.",
-                type=gtk.MESSAGE_ERROR)
+                "the documentation.")
+
+        dialog.format_secondary_text(message)
+        textbuffer.set_text(strerror)
+        dialog.run()
+        dialog.destroy()
 
     def show_message(self, title, message, type=gtk.MESSAGE_INFO):
         """Show a message dialog showing that input file was not set."""
