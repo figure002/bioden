@@ -11,7 +11,7 @@ setup(
     author_email='serrano.pereira@gmail.com',
     license='GPL3',
     platforms=['GNU/Linux','Windows'],
-    url='http://www.gimaris.com/',
+    url='https://sourceforge.net/p/bioden/home/',
     keywords = 'gimaris ecotope biomass density ambi',
     classifiers = [
         "License :: OSI Approved :: GNU General Public License (GPL)",
@@ -25,9 +25,9 @@ setup(
     ],
     install_requires = [
         'setuptools',
-        'pygtk >= 2.22',
-        'pygobject >= 2.26',
-        'pycairo >= 1.8.6',
+        'pygtk',
+        'pygobject',
+        'pycairo',
         'xlrd',
         'xlwt',
         ],
