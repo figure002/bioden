@@ -12,7 +12,7 @@ setup(
     license='GPL3',
     platforms=['GNU/Linux','Windows'],
     url='http://www.gimaris.com/',
-    keywords = 'gimaris ecotope biomass density',
+    keywords = 'gimaris ecotope biomass density ambi',
     classifiers = [
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
