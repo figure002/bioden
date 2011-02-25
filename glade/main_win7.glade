@@ -235,8 +235,10 @@
               <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
+                <property name="xscale">0</property>
                 <child>
                   <object class="GtkFileChooserButton" id="chooser_input_file">
+                    <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="title" translatable="yes">Select Data File</property>
                   </object>
@@ -251,8 +253,10 @@
               <object class="GtkAlignment" id="alignment3">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
+                <property name="xscale">0</property>
                 <child>
                   <object class="GtkFileChooserButton" id="chooser_output_folder">
+                    <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="action">select-folder</property>
                     <property name="title" translatable="yes">Select Output Folder</property>
@@ -270,6 +274,7 @@
               <object class="GtkAlignment" id="alignment4">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
+                <property name="xscale">0</property>
                 <child>
                   <object class="GtkComboBox" id="combobox_property">
                     <property name="width_request">220</property>
@@ -289,6 +294,7 @@
               <object class="GtkAlignment" id="alignment5">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
+                <property name="xscale">0</property>
                 <child>
                   <object class="GtkComboBox" id="combobox_output_format">
                     <property name="width_request">220</property>
