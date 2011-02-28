@@ -23,7 +23,6 @@ import os
 import csv
 from sqlite3 import dbapi2 as sqlite
 
-import xlrd
 import xlwt
 
 __author__ = "Serrano Pereira"
@@ -52,7 +51,7 @@ class Generator:
         self.ecotopes = processor.ecotopes
 
     def ecotope_data_grouped(self, ecotope, data_type='raw'):
-        """Return a iterator object which generates the CSV data of
+        """Return an iterator object which generates the CSV data of
         grouped data for ecotope `ecotope`.
         """
         if data_type == 'raw':
@@ -131,7 +130,7 @@ class Generator:
         connection.close()
 
     def ecotope_data_raw(self, ecotope):
-        """Return a iterator object which generates the CSV data of
+        """Return an iterator object which generates the CSV data of
         non-grouped data for ecotope `ecotope`.
         """
         if self._property == 'biomass':
@@ -208,7 +207,7 @@ class Generator:
         connection.close()
 
     def representatives(self):
-        """Return a iterator object which generates the CSV data with
+        """Return an iterator object which generates the CSV data with
         only the representative group for each ecotope.
         """
         connection = sqlite.connect(self._dbfile)
@@ -282,7 +281,7 @@ class Generator:
         connection.close()
 
     def export_ecotopes_grouped(self, data_type='raw'):
-        """Return a iterator object which generates CSV data for all ecotopes.
+        """Return an iterator object which generates CSV data for all ecotopes.
         For each ecotope, the grouped data is returned. If `data_type` is set
         to "raw", the non-normalized group values are returned. If `data_type`
         is set to "normalized", the normalized group values are returned.
@@ -311,7 +310,7 @@ class Generator:
             self.export(output_file, data)
 
     def export_ecotopes_raw(self):
-        """Return a iterator object which generates CSV data for all ecotopes.
+        """Return an iterator object which generates CSV data for all ecotopes.
         For each ecotope, the non-grouped data is returned.
         """
         for ecotope in self.ecotopes:
@@ -331,7 +330,7 @@ class Generator:
             self.export(output_file, data)
 
     def export_representatives(self):
-        """Return a iterator object which generates CSV data for all ecotopes.
+        """Return an iterator object which generates CSV data for all ecotopes.
         For each ecotope, only the representative group is returned.
         """
         # Create a CSV generator.
@@ -353,7 +352,7 @@ class CSVExporter(Generator):
 
     def export(self, output_file, data):
         """Write CSV data `data` to file `output_file`. For better performance,
-        'data' should be a iterator object.
+        'data' should be an iterator object.
         """
         writer = csv.writer(open(output_file, 'wb'),
             delimiter=',',
@@ -369,7 +368,7 @@ class XLSExporter(Generator):
 
     def export(self, output_file, data):
         """Write CSV data `data` to file `output_file`. For better performance,
-        'data' should be a iterator object.
+        'data' should be an iterator object.
         """
         wb = xlwt.Workbook()
         ws = wb.add_sheet('data')
