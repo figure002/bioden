@@ -11,13 +11,13 @@ BioDen has the following dependencies:
 
 * Python 2
 
-    * pygtk
+  * pygtk
 
-    * pygobject
+  * pygobject
 
-    * xlrd
+  * xlrd
 
-    * xlwt
+  * xlwt
 
 On Debian (based) systems, most dependencies can be installed from the
 software repository::
