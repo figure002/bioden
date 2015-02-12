@@ -2,4 +2,5 @@ include *.txt *.rst bioden.nsi setup-win.py
 recursive-include bioden *.glade
 graft data
 graft docs
+prune docs/_build
 global-exclude *.pyc
