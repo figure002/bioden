@@ -1,0 +1,4 @@
+pygtk
+pygobject
+xlrd
+xlwt

@@ -49,7 +49,10 @@ __email__ = "serrano.pereira@gmail.com"
 __status__ = "Production"
 __date__ = "2011/02/18"
 
-if __name__ == '__main__':
+def main():
     bioden.gui.MainWindow()
     gtk.main()
     sys.exit()
+
+if __name__ == '__main__':
+    main()

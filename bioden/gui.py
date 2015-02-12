@@ -25,6 +25,7 @@ import threading
 import webbrowser
 import csv
 
+from pkg_resources import resource_filename
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -49,7 +50,7 @@ class ProgressDialog:
 
     def __init__(self):
         self.builder = gtk.Builder()
-        self.builder.add_from_file('glade/pdialog.glade')
+        self.builder.add_from_file( resource_filename(__name__, 'glade/pdialog.glade') )
 
         self.dialog = self.builder.get_object('progress_dialog')
         self.pbar = self.builder.get_object('progressbar')
@@ -65,7 +66,7 @@ class ProgressDialog:
 class MainWindow:
     def __init__(self):
         self.builder = gtk.Builder()
-        self.builder.add_from_file('glade/main.glade')
+        self.builder.add_from_file( resource_filename(__name__, 'glade/main.glade') )
 
         self.window = self.builder.get_object('main_window')
 
@@ -220,7 +221,7 @@ class MainWindow:
 
         # Build an error dialog.
         builder = gtk.Builder()
-        builder.add_from_file('glade/errdialog.glade')
+        builder.add_from_file( resource_filename(__name__, 'glade/errdialog.glade') )
 
         dialog = builder.get_object('error_dialog')
         textbuffer = builder.get_object('textbuffer_details')
@@ -256,7 +257,7 @@ class MainWindow:
 
     def on_about(self, widget, data=None):
         builder = gtk.Builder()
-        builder.add_from_file('glade/about.glade')
+        builder.add_from_file( resource_filename(__name__, 'glade/about.glade') )
 
         about = builder.get_object('about_dialog')
         about.set_copyright(__copyright__)
