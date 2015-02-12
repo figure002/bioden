@@ -1,6 +1,7 @@
 *~
 *.swp
 *.pyc
+_build/
 dist/
 *.egg-info/
 env/
