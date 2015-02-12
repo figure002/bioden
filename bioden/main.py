@@ -23,14 +23,14 @@ import sys
 import os
 import warnings
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gobject
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import GObject
 
 import bioden.gui
 
-gobject.threads_init()
+GObject.threads_init()
 
 # The following is a workaround for the executable created with py2exe.
 # When warnings are emitted in windows mode (no console available) the
@@ -51,7 +51,7 @@ __date__ = "2011/02/18"
 
 def main():
     bioden.gui.MainWindow()
-    gtk.main()
+    Gtk.main()
     sys.exit()
 
 if __name__ == '__main__':

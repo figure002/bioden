@@ -21,7 +21,7 @@
 
 import time
 
-import gobject
+from gi.repository import GObject
 
 __author__ = "Serrano Pereira"
 __copyright__ = "Copyright 2010, 2011, GiMaRIS"
@@ -56,23 +56,23 @@ def median(values):
         upper = values[count/2]
         return (float(lower + upper)) / 2
 
-class Sender(gobject.GObject):
+class Sender(GObject.GObject):
     """Custom GObject for emitting custom signals."""
     __gproperties__ = {
-        'strerror' : (gobject.TYPE_STRING, # type
+        'strerror' : (GObject.TYPE_STRING, # type
             "Error message", # nick name
             "The error message returned by a function or class.", # description
             '', # default value
-            gobject.PARAM_READWRITE), # flags
+            GObject.PARAM_READWRITE), # flags
     }
 
     __gsignals__ = {
-        'process-finished': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
-        'load-data-failed': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
+        'process-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'load-data-failed': (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_STRING,)),
     }
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.strerror = ''
 
     def do_get_property(self, property):
@@ -121,7 +121,7 @@ class ProgressDialogHandler:
         string is showed in italics below the progress bar.
         """
         text = "<span style='italic'>%s</span>" % (text)
-        gobject.idle_add(self.pdialog.label_action.set_markup, text)
+        GObject.idle_add(self.pdialog.label_action.set_markup, text)
 
     def increase(self, action=None):
         """Increase the progress bar's fraction. Calling this method causes
@@ -160,8 +160,8 @@ class ProgressDialogHandler:
             return
 
         # In case this is always called from a separate thread, so we must use
-        # gobject.idle_add to access the GUI.
-        gobject.idle_add(self.__update_progress_dialog, fraction, action)
+        # GObject.idle_add to access the GUI.
+        GObject.idle_add(self.__update_progress_dialog, fraction, action)
 
     def __update_progress_dialog(self, fraction, action=None):
         """Set the progress dialog's progressbar fraction to `fraction`.
@@ -193,8 +193,8 @@ class ProgressDialogHandler:
                 # dialog when an analysis finishes very fast.
 
                 # This is always called from a separate thread, so we must
-                # use gobject.idle_add to access the GUI.
-                gobject.idle_add(self.__close_progress_dialog, 1)
+                # use GObject.idle_add to access the GUI.
+                GObject.idle_add(self.__close_progress_dialog, 1)
 
         # This callback function must return False, so it is
         # automatically removed from the list of event sources.
@@ -229,8 +229,8 @@ class ProgressDialogHandler:
         text += "\n"
 
         # This is always called from a separate thread, so we must use
-        # gobject.idle_add to access the GUI.
-        gobject.idle_add(self.__on_add_details, text)
+        # GObject.idle_add to access the GUI.
+        GObject.idle_add(self.__on_add_details, text)
 
     def __on_add_details(self, text):
         """Add `text` to the progress dialog's details text box. This

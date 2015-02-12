@@ -26,7 +26,7 @@ import threading
 from sqlite3 import dbapi2 as sqlite
 import csv
 
-import gobject
+from gi.repository import GObject
 import xlrd
 
 import bioden.std
@@ -153,7 +153,7 @@ class DataProcessor(threading.Thread):
             self.load_data()
         except Exception as strerror:
             # Emit the signal that the process has failed.
-            gobject.idle_add(bioden.std.sender.emit, 'load-data-failed', strerror)
+            GObject.idle_add(bioden.std.sender.emit, 'load-data-failed', strerror)
             return
 
         # Pre-process some data. This will populate self.ecotopes, which
@@ -191,7 +191,7 @@ class DataProcessor(threading.Thread):
         self.pdialog_handler.increase("")
 
         # Emit the signal that the process was successful.
-        gobject.idle_add(bioden.std.sender.emit, 'process-finished')
+        GObject.idle_add(bioden.std.sender.emit, 'process-finished')
 
     def check_settings(self):
         if not self._input_file:

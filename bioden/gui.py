@@ -26,10 +26,10 @@ import webbrowser
 import csv
 
 from pkg_resources import resource_filename
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gobject
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import GObject
 
 import bioden.std
 import bioden.processor
@@ -49,7 +49,7 @@ class ProgressDialog:
     """Display a progress dialog."""
 
     def __init__(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file( resource_filename(__name__, 'glade/pdialog.glade') )
 
         self.dialog = self.builder.get_object('progress_dialog')
@@ -65,7 +65,7 @@ class ProgressDialog:
 
 class MainWindow:
     def __init__(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file( resource_filename(__name__, 'glade/main.glade') )
 
         self.window = self.builder.get_object('main_window')
@@ -87,13 +87,13 @@ class MainWindow:
         set from Glade 3."""
 
         # Create a CSV filter for file choosers.
-        self.filefilter_csv = gtk.FileFilter()
+        self.filefilter_csv = Gtk.FileFilter()
         self.filefilter_csv.set_name("Comma Separated Values (.csv)")
         self.filefilter_csv.add_mime_type("text/csv")
         self.filefilter_csv.add_pattern("*.csv")
 
         # Create a XML filter for file choosers.
-        self.filefilter_xsl = gtk.FileFilter()
+        self.filefilter_xsl = Gtk.FileFilter()
         self.filefilter_xsl.set_name("Microsoft Excel 97/2000/XP (.xls)")
         self.filefilter_xsl.add_mime_type("application/vnd.ms-excel")
         self.filefilter_xsl.add_pattern("*.xls")
@@ -109,24 +109,12 @@ class MainWindow:
         chooser_output_folder.set_current_folder(os.path.expanduser('~'))
 
         # Add items to the 'property' combobox.
-        #print gobject.type_name(gobject.TYPE_STRING)
+        #print GObject.type_name(GObject.TYPE_STRING)
         self.combobox_property = self.builder.get_object('combobox_property')
-        cell = gtk.CellRendererText()
-        self.combobox_property.pack_start(cell, True)
-        self.combobox_property.add_attribute(cell, 'text', 0)
-        self.combobox_property.append_text('biomass')
-        self.combobox_property.append_text('density')
-        self.combobox_property.set_active(0)
 
         # Add items to the 'output format' combobox.
-        #print gobject.type_name(gobject.TYPE_STRING)
+        #print GObject.type_name(GObject.TYPE_STRING)
         self.combobox_output_format = self.builder.get_object('combobox_output_format')
-        cell = gtk.CellRendererText()
-        self.combobox_output_format.pack_start(cell, True)
-        self.combobox_output_format.add_attribute(cell, 'text', 0)
-        self.combobox_output_format.append_text("Comma Separated Values (.csv)")
-        self.combobox_output_format.append_text("Microsoft Excel 97/2000/XP (.xls)")
-        self.combobox_output_format.set_active(0)
 
         # Set the default value for the 'round' spinbutton.
         self.builder.get_object('adjustment_round').set_value(-1)
@@ -134,9 +122,9 @@ class MainWindow:
         # Change the background color of the warning frame.
         if os.name == 'posix':
             frame_warning = self.builder.get_object('frame_warning')
-            frame_warning.set_shadow_type(gtk.SHADOW_OUT)
-            #color = gtk.gdk.color_parse('#EFE0CD')
-            #frame_warning.modify_bg(gtk.STATE_NORMAL, color)
+            frame_warning.set_shadow_type(Gtk.ShadowType.OUT)
+            #color = Gdk.color_parse('#EFE0CD')
+            #frame_warning.modify_bg(Gtk.StateType.NORMAL, color)
 
     def on_combobox_output_format_changed(self, combobox, data=None):
         """Show the .xls warning message if the user selected .xls as the
@@ -150,7 +138,7 @@ class MainWindow:
             self.builder.get_object('frame_warning').hide()
 
     def on_window_destroy(self, widget, data=None):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def on_button_start_clicked(self, widget, data=None):
         # Get some values from the GUI.
@@ -161,17 +149,17 @@ class MainWindow:
         if not input_file:
             self.show_message(title="No data file selected",
                 message="You didn't select the data file. Please select the data file first.",
-                type=gtk.MESSAGE_ERROR)
+                type=Gtk.MessageType.ERROR)
             return
 
         # Get all values from the GUI.
-        delimiter = self.builder.get_object('input_delimiter').get_text()
-        quotechar = self.builder.get_object('input_quotechar').get_text()
+        delimiter = self.builder.get_object('entry_delimiter').get_text()
+        quotechar = self.builder.get_object('entry_quotechar').get_text()
         active = self.combobox_property.get_active()
         property = self.builder.get_object('liststore_property')[active][0]
         active = self.combobox_output_format.get_active()
         output_format = self.builder.get_object('liststore_output_format')[active][0]
-        target_sample_surface = float(self.builder.get_object('input_sample_surface').get_text())
+        target_sample_surface = float(self.builder.get_object('entry_sample_surface').get_text())
         decimals = int(self.builder.get_object('spinbutton_round').get_value())
 
         # Normalize the output format name.
@@ -220,7 +208,7 @@ class MainWindow:
         self.pd.dialog.destroy()
 
         # Build an error dialog.
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         builder.add_from_file( resource_filename(__name__, 'glade/errdialog.glade') )
 
         dialog = builder.get_object('error_dialog')
@@ -244,19 +232,19 @@ class MainWindow:
         dialog.run()
         dialog.destroy()
 
-    def show_message(self, title, message, type=gtk.MESSAGE_INFO):
+    def show_message(self, title, message, type=Gtk.MessageType.INFO):
         """Show a message dialog showing that input file was not set."""
-        dialog = gtk.MessageDialog(parent=None, flags=0,
+        dialog = Gtk.MessageDialog(parent=None, flags=0,
             type=type,
-            buttons=gtk.BUTTONS_OK,
+            buttons=Gtk.ButtonsType.OK,
             message_format=title)
         dialog.format_secondary_text(message)
-        dialog.set_position(gtk.WIN_POS_CENTER)
+        dialog.set_position(Gtk.WindowPosition.CENTER)
         dialog.run()
         dialog.destroy()
 
     def on_about(self, widget, data=None):
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         builder.add_from_file( resource_filename(__name__, 'glade/about.glade') )
 
         about = builder.get_object('about_dialog')
