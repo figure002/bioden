@@ -7,11 +7,11 @@ Requirements
 
 BioDen has the following dependencies:
 
-* GTK+ (>=3.6)
+* `GTK+`_ (>=3.6)
 
 * Python (>=2.7)
 
-  * PyGObject (>=3.10)
+  * PyGObject_ (>=3.10)
 
   * xlrd
 
@@ -27,6 +27,9 @@ Package Index::
 
     pip install -r requirements.txt
 
+Windows users first need to install `GTK+`_ and PyGObject_. Then use pip_
+as described above to install the remaining dependencies.
+
 
 Installation
 ============
@@ -39,3 +42,8 @@ From the GitHub repository::
 Or if you have a source archive file::
 
     pip install bioden-x.x.tar.gz
+
+
+.. _`GTK+`: http://www.gtk.org/download/index.php
+.. _PyGObject: https://wiki.gnome.org/action/show/Projects/PyGObject
+.. _pip: https://pip.pypa.io/en/latest/installing.html
