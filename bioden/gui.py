@@ -108,12 +108,7 @@ class MainWindow:
         chooser_output_folder = self.builder.get_object('chooser_output_folder')
         chooser_output_folder.set_current_folder(os.path.expanduser('~'))
 
-        # Add items to the 'property' combobox.
-        #print GObject.type_name(GObject.TYPE_STRING)
         self.combobox_property = self.builder.get_object('combobox_property')
-
-        # Add items to the 'output format' combobox.
-        #print GObject.type_name(GObject.TYPE_STRING)
         self.combobox_output_format = self.builder.get_object('combobox_output_format')
 
         # Set the default value for the 'round' spinbutton.
@@ -131,7 +126,7 @@ class MainWindow:
         output format.
         """
         active = combobox.get_active()
-        output_format = self.builder.get_object('liststore_output_format')[active][0]
+        output_format = self.combobox_output_format.get_active_text()
         if ".xls" in output_format:
             self.builder.get_object('frame_warning').show()
         else:
@@ -156,9 +151,9 @@ class MainWindow:
         delimiter = self.builder.get_object('entry_delimiter').get_text()
         quotechar = self.builder.get_object('entry_quotechar').get_text()
         active = self.combobox_property.get_active()
-        property = self.builder.get_object('liststore_property')[active][0]
+        prop = self.combobox_property.get_active_text()
         active = self.combobox_output_format.get_active()
-        output_format = self.builder.get_object('liststore_output_format')[active][0]
+        output_format = self.combobox_output_format.get_active_text()
         target_sample_surface = float(self.builder.get_object('entry_sample_surface').get_text())
         decimals = int(self.builder.get_object('spinbutton_round').get_value())
 
@@ -182,7 +177,7 @@ class MainWindow:
         elif ".xls" in self.filter_name:
             t = bioden.processor.XLSProcessor()
             t.set_input_file(input_file, 'xls')
-        t.set_property(property)
+        t.set_property(prop)
         t.set_output_folder(output_folder)
         t.set_progress_dialog(self.pd)
         t.set_target_sample_surface(target_sample_surface)

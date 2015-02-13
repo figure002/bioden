@@ -11,10 +11,13 @@
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="width_request">400</property>
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">BioDen</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
+    <property name="default_width">400</property>
+    <signal name="destroy" handler="on_window_destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -41,6 +44,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_help" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -50,6 +54,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_about" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -74,6 +79,7 @@
               <object class="GtkLabel" id="label_select_file">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The CSV file containing the biomass and density data to be normalized.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Select input data file:</property>
                 <property name="justify">right</property>
@@ -89,6 +95,7 @@
               <object class="GtkLabel" id="label_select_folder">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Select the folder to which all output files should be saved.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Select output folder:</property>
                 <property name="justify">right</property>
@@ -104,6 +111,7 @@
               <object class="GtkLabel" id="label_property">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The property to perform the calculations on. Can be either 'biomass' or 'density'.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Property for calculations:</property>
                 <property name="justify">right</property>
@@ -119,6 +127,7 @@
               <object class="GtkLabel" id="label_output_format">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The file format to save the output files in.</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Format for output files:</property>
                 <property name="justify">right</property>
@@ -211,6 +220,7 @@
                       <item id="0" translatable="yes">Comma Separated Values (.csv)</item>
                       <item id="1" translatable="yes">Microsoft Excel 97/2000/XP (.xls)</item>
                     </items>
+                    <signal name="changed" handler="on_combobox_output_format_changed" swapped="no"/>
                   </object>
                 </child>
               </object>
@@ -224,7 +234,6 @@
             <child>
               <object class="GtkFrame" id="frame_warning">
                 <property name="width_request">200</property>
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
@@ -242,6 +251,7 @@
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Excel (.xls) files support a maximum of 256 columns. Columns that exceed this limit won't be exported!</property>
                         <property name="wrap">True</property>
+                        <property name="max_width_chars">50</property>
                       </object>
                     </child>
                   </object>
@@ -288,6 +298,7 @@
                       <object class="GtkLabel" id="label_sample_surface">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">The sample surface used for AMBI files.</property>
                         <property name="label" translatable="yes">Target sample surface:</property>
                       </object>
                       <packing>
@@ -301,6 +312,7 @@
                       <object class="GtkLabel" id="label_round">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Number of decimals to round values to. Value -1 means don't round.</property>
                         <property name="label" translatable="yes">Round values to n decimals:</property>
                       </object>
                       <packing>
@@ -314,6 +326,7 @@
                       <object class="GtkEntry" id="entry_sample_surface">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="width_chars">5</property>
                         <property name="text" translatable="yes">0.2</property>
                       </object>
                       <packing>
@@ -327,6 +340,7 @@
                       <object class="GtkSpinButton" id="spinbutton_round">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="width_chars">5</property>
                         <property name="adjustment">adjustment_round</property>
                         <property name="climb_rate">1</property>
                         <property name="numeric">True</property>
@@ -369,6 +383,7 @@
                       <object class="GtkLabel" id="label_delimiter">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">A one-character string used to separate fields in the input CSV file.</property>
                         <property name="label" translatable="yes">Field delimiter of the input file:</property>
                       </object>
                       <packing>
@@ -382,6 +397,7 @@
                       <object class="GtkLabel" id="label_quotechar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">A one-character string used to quote fields containing special characters in the input CSV file.</property>
                         <property name="label" translatable="yes">Quote character of the input file:</property>
                       </object>
                       <packing>
@@ -462,6 +478,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_button_start_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
