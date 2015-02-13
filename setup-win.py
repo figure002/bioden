@@ -22,7 +22,7 @@ setup(
     author='Serrano Pereira',
     author_email='serrano.pereira@gmail.com',
     license='GPL3',
-    url='http://www.gimaris.com/',
+    url='https://github.com/figure002/bioden',
 
     windows = [{
         'script': 'bioden/main.py',

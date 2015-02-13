@@ -43,7 +43,9 @@ Or if you have a source archive file::
 
     pip install bioden-x.x.tar.gz
 
+Windows installers and documentation can be obtained from SourceForge_.
 
 .. _`GTK+`: http://www.gtk.org/download/index.php
 .. _PyGObject: https://wiki.gnome.org/action/show/Projects/PyGObject
 .. _pip: https://pip.pypa.io/en/latest/installing.html
+.. _SourceForge: http://bioden.sourceforge.net/

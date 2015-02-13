@@ -16,7 +16,7 @@ setup(
     version=__version__,
     description='A data normalizer and transponer for files containing taxon biomass/density data for ecotopes.',
     long_description=long_description,
-    url='https://sourceforge.net/p/bioden/home/',
+    url='https://github.com/figure002/bioden',
     author='Serrano Pereira',
     author_email='serrano.pereira@gmail.com',
     license='GPL3',
