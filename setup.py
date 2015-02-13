@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
+from bioden import __version__
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
@@ -11,7 +13,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='bioden',
-    version='0.3',
+    version=__version__,
     description='A data normalizer and transponer for files containing taxon biomass/density data for ecotopes.',
     long_description=long_description,
     url='https://sourceforge.net/p/bioden/home/',
@@ -32,6 +34,7 @@ setup(
     keywords = 'gimaris ecotope biomass density ambi',
     packages=find_packages(exclude=['docs']),
     install_requires=[
+        'PyGObject>=3.10',
         'xlrd',
         'xlwt',
     ],

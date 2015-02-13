@@ -6,6 +6,8 @@ from os import path
 
 import py2exe
 
+from bioden import __version__
+
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
@@ -14,7 +16,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name = 'bioden',
-    version = '0.3',
+    version = __version__,
     description = "A data normalizer and transponer for files containing taxon biomass/density data for ecotopes.",
     long_description=long_description,
     author='Serrano Pereira',

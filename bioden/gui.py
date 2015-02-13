@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Copyright 2010, 2011, GiMaRIS <info@gimaris.com>
+#  Copyright 2010, 2011, 2015 GiMaRIS <info@gimaris.com>
 #
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
@@ -31,19 +31,9 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GObject
 
+from bioden import __copyright__, __version__
 import bioden.std
 import bioden.processor
-
-__author__ = "Serrano Pereira"
-__copyright__ = "Copyright 2010, 2011, GiMaRIS"
-__credits__ = ["Serrano Pereira <serrano.pereira@gmail.com>"]
-__license__ = "GPL3"
-__version__ = "0.3"
-__maintainer__ = "Serrano Pereira"
-__email__ = "serrano.pereira@gmail.com"
-__status__ = "Production"
-__date__ = "2011/02/18"
-
 
 class ProgressDialog:
     """Display a progress dialog."""

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Copyright 2010, 2011, GiMaRIS <info@gimaris.com>
+#  Copyright 2010, 2011, 2015 GiMaRIS <info@gimaris.com>
 #
 #  This file is part of BioDen - A data normalizer and transponer for
 #  files containing taxon biomass/density data for ecotopes.
@@ -22,17 +22,6 @@
 import time
 
 from gi.repository import GObject
-
-__author__ = "Serrano Pereira"
-__copyright__ = "Copyright 2010, 2011, GiMaRIS"
-__credits__ = ["Serrano Pereira <serrano.pereira@gmail.com>"]
-__license__ = "GPL3"
-__version__ = "0.3"
-__maintainer__ = "Serrano Pereira"
-__email__ = "serrano.pereira@gmail.com"
-__status__ = "Production"
-__date__ = "2011/02/18"
-
 
 def to_float(x):
     """Return the float from a number which uses a comma as the decimal

@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "BioDen"
-!define PRODUCT_VERSION "0.3"
+!define PRODUCT_VERSION "0.4"
 !define PRODUCT_PUBLISHER "GiMaRIS"
 !define PRODUCT_WEB_SITE "http://bioden.sourceforge.net/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\bioden.exe"

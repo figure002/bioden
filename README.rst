@@ -7,22 +7,20 @@ Requirements
 
 BioDen has the following dependencies:
 
-* GTK+ 2
+* GTK+ (>=3.6)
 
-* Python 2
+* Python (>=2.7)
 
-  * pygtk
-
-  * pygobject
+  * PyGObject (>=3.10)
 
   * xlrd
 
   * xlwt
 
-On Debian (based) systems, most dependencies can be installed from the
+On Debian (based) systems, the dependencies can be installed from the
 software repository::
 
-    sudo apt-get install python-gtk2 python-xlrd python-xlwt
+    sudo apt-get install python-gobject python-xlrd python-xlwt
 
 More recent versions of some Python packages can be obtained via the Python
 Package Index::

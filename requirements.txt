@@ -1,4 +1,3 @@
-pygtk
-pygobject
+PyGObject>=3.10
 xlrd
 xlwt
