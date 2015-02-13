@@ -229,14 +229,11 @@ class MainWindow:
         dialog.destroy()
 
     def on_about(self, widget, data=None):
-        builder = Gtk.Builder()
-        builder.add_from_file( resource_filename(__name__, 'glade/about.glade') )
-
-        about = builder.get_object('about_dialog')
+        about = self.builder.get_object('about_dialog')
         about.set_copyright(__copyright__)
         about.set_version(__version__)
         about.run()
-        about.destroy()
+        about.hide()
 
     def on_help(button, section):
         """Display the help contents in the system's default web

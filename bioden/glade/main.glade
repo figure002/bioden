@@ -504,4 +504,208 @@
       </object>
     </child>
   </object>
+  <object class="GtkAboutDialog" id="about_dialog">
+    <property name="width_request">300</property>
+    <property name="can_focus">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">normal</property>
+    <property name="transient_for">main_window</property>
+    <property name="program_name">BioDen</property>
+    <property name="comments" translatable="yes">A data normalizer and transponer for files containing
+taxon biomass/density data for ecotopes.</property>
+    <property name="website">http://bioden.sourceforge.net/</property>
+    <property name="license" translatable="yes">This program comes with ABSOLUTELY NO WARRANTY;
+for details, visit &lt;a href="http://www.gnu.org/licenses/gpl.html"&gt;http://www.gnu.org/licenses/gpl.html&lt;/a&gt;</property>
+    <property name="authors">Contact Person:
+	Arjan Gittenberger &lt;gittenberger@gimaris.com&gt;
+Application Developer:
+	Serrano Pereira &lt;serrano.pereira@gmail.com&gt;</property>
+    <property name="logo_icon_name"/>
+    <property name="wrap_license">True</property>
+    <property name="license_type">gpl-3-0</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="aboutdialog-vbox3">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="aboutdialog-action_area3">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMessageDialog" id="error_dialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">normal</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="message_type">error</property>
+    <property name="buttons">ok</property>
+    <property name="text" translatable="yes">Loading data failed!</property>
+    <property name="secondary_text" translatable="yes">The data could not be loaded.</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="messagedialog-vbox4">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="messagedialog-action_area4">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkExpander" id="expander_details1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow_details1">
+                <property name="height_request">80</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">etched-in</property>
+                <child>
+                  <object class="GtkTextView" id="textview_details1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="pixels_below_lines">4</property>
+                    <property name="editable">False</property>
+                    <property name="wrap_mode">word</property>
+                    <property name="left_margin">4</property>
+                    <property name="right_margin">4</property>
+                    <property name="buffer">textbuffer_details</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="label_details1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Error details</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="progress_dialog">
+    <property name="width_request">420</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Processing Data</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <child>
+      <object class="GtkVBox" id="vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">10</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkLabel" id="label_descr">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Please wait while the data is being processed. This could take some time...</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="progressbar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pulse_step">0.050000000000000003</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_action">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkExpander" id="expander_details">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow_details">
+                <property name="height_request">150</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">etched-in</property>
+                <child>
+                  <object class="GtkTextView" id="textview_details">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="pixels_below_lines">4</property>
+                    <property name="editable">False</property>
+                    <property name="wrap_mode">word</property>
+                    <property name="left_margin">4</property>
+                    <property name="right_margin">4</property>
+                    <property name="buffer">textbuffer_details</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="label_details">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Details</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
