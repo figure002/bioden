@@ -27,7 +27,7 @@ Users
 Developers
 ==========
 
-* `Get the source code <http://sourceforge.net/projects/bioden/files/>`_
+* `Get the source code <https://github.com/figure002/bioden>`_
 
 Contents
 ========
