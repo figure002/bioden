@@ -25,13 +25,12 @@ import threading
 import webbrowser
 import csv
 
-from pkg_resources import resource_filename
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GObject
 
-from bioden import __copyright__, __version__
+from bioden import __copyright__, __version__, resource_filename
 import bioden.std
 import bioden.processor
 
@@ -40,7 +39,7 @@ class ProgressDialog:
 
     def __init__(self):
         self.builder = Gtk.Builder()
-        self.builder.add_from_file( resource_filename(__name__, 'glade/pdialog.glade') )
+        self.builder.add_from_file( resource_filename('glade/pdialog.glade') )
 
         self.dialog = self.builder.get_object('progress_dialog')
         self.pbar = self.builder.get_object('progressbar')
@@ -56,7 +55,7 @@ class ProgressDialog:
 class MainWindow:
     def __init__(self):
         self.builder = Gtk.Builder()
-        self.builder.add_from_file( resource_filename(__name__, 'glade/main.glade') )
+        self.builder.add_from_file( resource_filename('glade/main.glade') )
 
         self.window = self.builder.get_object('main_window')
 
@@ -194,7 +193,7 @@ class MainWindow:
 
         # Build an error dialog.
         builder = Gtk.Builder()
-        builder.add_from_file( resource_filename(__name__, 'glade/errdialog.glade') )
+        builder.add_from_file( resource_filename('glade/errdialog.glade') )
 
         dialog = builder.get_object('error_dialog')
         textbuffer = builder.get_object('textbuffer_details')
