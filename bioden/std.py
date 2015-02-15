@@ -76,21 +76,19 @@ class Sender(GObject.GObject):
         else:
             raise AttributeError('Unknown property %s' % property.name)
 
-
-
-class ProgressDialogHandler:
+class ProgressDialogHandler():
     """This class allows you to control the progress dialog from a separate
     thread.
     """
 
-    def __init__(self, pdialog=None):
+    def __init__(self, dialog=None):
         self.total_steps = None
         self.current_step = 0
-        self.autoclose = True
-        self.pdialog = pdialog
+        self.autoclose = False
+        self.dialog = dialog
 
-    def set_progress_dialog(self, pdialog):
-        self.pdialog = pdialog
+    def set_progress_dialog(self, dialog):
+        self.dialog = dialog
 
     def set_total_steps(self, number):
         """Set the total number of steps for the progress."""
@@ -110,7 +108,7 @@ class ProgressDialogHandler:
         string is showed in italics below the progress bar.
         """
         text = "<span style='italic'>%s</span>" % (text)
-        GObject.idle_add(self.pdialog.label_action.set_markup, text)
+        GObject.idle_add(self.dialog.label_action.set_markup, text)
 
     def increase(self, action=None):
         """Increase the progress bar's fraction. Calling this method causes
@@ -145,7 +143,7 @@ class ProgressDialogHandler:
         dialog is set, nothing will happen.
         """
         # If no progress dialog is set, do nothing.
-        if not self.pdialog:
+        if not self.dialog:
             return
 
         # In case this is always called from a separate thread, so we must use
@@ -160,21 +158,20 @@ class ProgressDialogHandler:
 
         Don't call this function manually; use :meth:`increase` instead.
         """
-
         # Update fraction.
-        self.pdialog.pbar.set_fraction(fraction)
+        self.dialog.progress_bar.set_fraction(fraction)
 
         # Set percentage text for the progress bar.
         percent = fraction * 100.0
-        self.pdialog.pbar.set_text("%.1f%%" % percent)
+        self.dialog.progress_bar.set_text("%.1f%%" % percent)
 
         # Show the current action below the progress bar.
         if isinstance(action, str):
             action = "<span style='italic'>%s</span>" % (action)
-            self.pdialog.label_action.set_markup(action)
+            self.dialog.label_action.set_markup(action)
 
         if fraction == 1.0:
-            self.pdialog.pbar.set_text("Finished!")
+            self.dialog.progress_bar.set_text("Finished!")
 
             if self.autoclose:
                 # Close the progress dialog when finished. We set a delay
@@ -196,12 +193,11 @@ class ProgressDialogHandler:
         There's no need to call this function manually, as it is called
         by :meth:`__update_progress_dialog` when needed.
         """
-
         # If a delay is set, sleep 'delay' seconds.
         if delay: time.sleep(delay)
 
         # Close the progress dialog.
-        self.pdialog.destroy()
+        self.dialog.destroy()
 
         # This callback function must return False, so it is
         # automatically removed from the list of event sources.
@@ -209,9 +205,8 @@ class ProgressDialogHandler:
 
     def add_details(self, text):
         """Add `text` to the progress dialog's details text box."""
-
         # If no progress dialog is set, do nothing.
-        if not self.pdialog:
+        if not self.dialog:
             return
 
         # Add a newline at the end of 'text'.
@@ -225,12 +220,11 @@ class ProgressDialogHandler:
         """Add `text` to the progress dialog's details text box. This
         function is called by :meth:`update_progress_details`, and
         should not be called manually."""
-
         # Update text for the details textview.
-        self.pdialog.textbuffer.insert_at_cursor(text)
+        self.dialog.textbuffer.insert_at_cursor(text)
 
         # Scroll to the bottom of the textview.
-        self.pdialog.textview.scroll_mark_onscreen(self.pdialog.textbuffer.get_insert())
+        self.dialog.textview.scroll_mark_onscreen(self.dialog.textbuffer.get_insert())
 
         # This callback function must return False, so it is
         # automatically removed from the list of event sources.

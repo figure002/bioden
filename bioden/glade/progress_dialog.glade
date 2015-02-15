@@ -10,6 +10,7 @@
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
+    <signal name="destroy" handler="on_progress_dialog_destroy" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="visible">True</property>
@@ -31,7 +32,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkProgressBar" id="progressbar">
+          <object class="GtkProgressBar" id="progress_bar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="pulse_step">0.050000000000000003</property>

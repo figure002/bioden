@@ -551,6 +551,7 @@ Application Developer:
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
     <property name="skip_taskbar_hint">True</property>
+    <property name="transient_for">main_window</property>
     <property name="message_type">error</property>
     <property name="buttons">ok</property>
     <property name="text" translatable="yes">Loading data failed!</property>
@@ -593,7 +594,6 @@ Application Developer:
                     <property name="wrap_mode">word</property>
                     <property name="left_margin">4</property>
                     <property name="right_margin">4</property>
-                    <property name="buffer">textbuffer_details</property>
                   </object>
                 </child>
               </object>
@@ -602,7 +602,7 @@ Application Developer:
               <object class="GtkLabel" id="label_details1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Error details</property>
+                <property name="label" translatable="yes">Details</property>
               </object>
             </child>
           </object>
@@ -622,6 +622,8 @@ Application Developer:
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
+    <property name="transient_for">main_window</property>
+    <signal name="destroy" handler="on_progress_dialog_destroy" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="visible">True</property>
@@ -643,7 +645,7 @@ Application Developer:
           </packing>
         </child>
         <child>
-          <object class="GtkProgressBar" id="progressbar">
+          <object class="GtkProgressBar" id="progress_bar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="pulse_step">0.050000000000000003</property>
@@ -668,44 +670,11 @@ Application Developer:
           </packing>
         </child>
         <child>
-          <object class="GtkExpander" id="expander_details">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow_details">
-                <property name="height_request">150</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">etched-in</property>
-                <child>
-                  <object class="GtkTextView" id="textview_details">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="pixels_below_lines">4</property>
-                    <property name="editable">False</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="left_margin">4</property>
-                    <property name="right_margin">4</property>
-                    <property name="buffer">textbuffer_details</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child type="label">
-              <object class="GtkLabel" id="label_details">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Details</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
+          <placeholder/>
         </child>
       </object>
     </child>
   </object>
+  <object class="GtkTextBuffer" id="textbuffer_details"/>
+  <object class="GtkTextBuffer" id="textbuffer_error_details"/>
 </interface>

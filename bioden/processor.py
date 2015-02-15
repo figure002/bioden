@@ -35,7 +35,7 @@ import bioden.exporter
 class DataProcessor(threading.Thread):
     def __init__(self):
         super(DataProcessor, self).__init__()
-
+        self._stop = threading.Event()
         self._input_file = None
         self._reader = None
         self._output_folder = None
@@ -47,8 +47,10 @@ class DataProcessor(threading.Thread):
         self._pdialog = None
         self.pdialog_handler = bioden.std.ProgressDialogHandler()
         self._representative_groups = {}
-        self._properties = {'density': 'sum_of_density',
-            'biomass': 'sum_of_biomass'}
+        self._properties = {
+            'density': 'sum_of_density',
+            'biomass': 'sum_of_biomass'
+        }
         self.ecotopes = []
         self.taxa = []
         self.csv_dialect = csv.excel
@@ -56,11 +58,19 @@ class DataProcessor(threading.Thread):
         # Set the path to the database file.
         self.set_directives()
 
+    def stop(self):
+        """Stop this thread."""
+        self._stop.set()
+
+    def stopped(self):
+        """Return True if this thread needs to be stopped."""
+        return self._stop.is_set()
+
     def set_input_file(self, filename, type):
         """Set the input file and type."""
         supported_types = ('csv','xls')
         if type not in supported_types:
-            raise ValueError("Possible values for 'type' are 'csv' and 'xls', not '%s'." % type)
+            raise ValueError("Unknown file type '%s'." % type)
         self._input_file = (filename, type)
 
     def set_csv_dialect(self, delimiter, quotechar):
@@ -89,9 +99,9 @@ class DataProcessor(threading.Thread):
         # Set the path to the database file.
         self._dbfile = os.path.join(data_path, 'data.sqlite')
 
-    def set_progress_dialog(self, pdialog):
-        self._pdialog = pdialog
-        self.pdialog_handler.set_progress_dialog(pdialog)
+    def set_progress_dialog(self, dialog):
+        self._pdialog = dialog
+        self.pdialog_handler.set_progress_dialog(dialog)
 
     def set_property(self, property):
         if property in self._properties:
@@ -153,34 +163,40 @@ class DataProcessor(threading.Thread):
         steps = 7 + (len(self.ecotopes) * 4)
         self.pdialog_handler.set_total_steps(steps)
 
-        # Process data for the property 'self._property'.
-        self.pdialog_handler.increase("Making sample groups for property '%s'..." % (self._property))
-        # Here, pdialog_handler.increase will be called for each ecotope.
-        self.process()
+        if not self.stopped():
+            # Process data for the property 'self._property'.
+            self.pdialog_handler.increase("Making sample groups for property '%s'..." % (self._property))
+            # Here, pdialog_handler.increase will be called for each ecotope.
+            self.process()
 
-        # Export the results.
-        self.pdialog_handler.increase("Exporting non-grouped ecotope data...")
-        # Here, pdialog_handler.increase will be called for each ecotope.
-        generator.export_ecotopes_raw()
+        if not self.stopped():
+            # Export the results.
+            self.pdialog_handler.increase("Exporting non-grouped ecotope data...")
+            # Here, pdialog_handler.increase will be called for each ecotope.
+            generator.export_ecotopes_raw()
 
-        self.pdialog_handler.increase("Exporting raw ecotope groups...")
-        # Here, pdialog_handler.increase will be called for each ecotope.
-        generator.export_ecotopes_grouped('raw')
+        if not self.stopped():
+            self.pdialog_handler.increase("Exporting raw ecotope groups...")
+            # Here, pdialog_handler.increase will be called for each ecotope.
+            generator.export_ecotopes_grouped('raw')
 
-        self.pdialog_handler.increase("Exporting normalized ecotope groups...")
-        # Here, pdialog_handler.increase will be called for each ecotope.
-        generator.export_ecotopes_grouped('normalized')
+        if not self.stopped():
+            self.pdialog_handler.increase("Exporting normalized ecotope groups...")
+            # Here, pdialog_handler.increase will be called for each ecotope.
+            generator.export_ecotopes_grouped('normalized')
 
-        self.pdialog_handler.increase("Determining representative sample group for each ecotope...")
-        self.determine_representative_groups()
+        if not self.stopped():
+            self.pdialog_handler.increase("Determining representative sample group for each ecotope...")
+            self.determine_representative_groups()
 
-        self.pdialog_handler.increase("Exporting representative sample groups...")
-        generator.export_representatives()
+        if not self.stopped():
+            self.pdialog_handler.increase("Exporting representative sample groups...")
+            generator.export_representatives()
 
-        self.pdialog_handler.increase("")
+            self.pdialog_handler.increase("")
 
-        # Emit the signal that the process was successful.
-        GObject.idle_add(bioden.std.sender.emit, 'process-finished')
+            # Emit the signal that the process was successful.
+            GObject.idle_add(bioden.std.sender.emit, 'process-finished')
 
     def check_settings(self):
         if not self._input_file:
