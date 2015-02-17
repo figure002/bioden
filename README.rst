@@ -7,7 +7,7 @@ Requirements
 
 BioDen has the following dependencies:
 
-* `GTK+`_ (>=3.6)
+* GTK+ (>=3.6)
 
 * Python (>=2.7)
 
@@ -27,8 +27,8 @@ Package Index::
 
     pip install -r requirements.txt
 
-Windows users first need to install `GTK+`_ and PyGObject_. Then use pip_
-as described above to install the remaining dependencies.
+Windows users first need to install PyGObject_. Then use ``pip`` as described
+above to install the remaining dependencies.
 
 
 Installation
@@ -43,9 +43,45 @@ Or if you have a source archive file::
 
     pip install bioden-x.x.tar.gz
 
-Windows installers and documentation can be obtained from SourceForge_.
+Windows installers can be obtained from SourceForge_.
 
-.. _`GTK+`: http://www.gtk.org/download/index.php
+
+Documentation
+=============
+
+Full documentation_ can be found on the BioDen project page on SourceForge_.
+Alternatively, the same documentation can be built using Sphinx_::
+
+    $ cd docs
+    $ make html
+
+Then launch ``docs/_build/html/index.html`` in your browser.
+
+
+Contributing
+============
+
+Please follow the next steps:
+
+1. Fork the project on github.com.
+2. Create a new branch.
+3. Commit changes to the new branch.
+4. Send a `pull request`_.
+
+Follow the next steps to run and develop BioDen within a virtualenv_ isolated
+Python environment::
+
+    $ git clone https://github.com/figure002/bioden.git
+    $ cd bioden/
+    $ virtualenv --system-site-packages env
+    $ source env/bin/activate
+    (env)$ pip install -r requirements.txt
+    (env)$ python setup.py develop
+    (env)$ bioden
+
 .. _PyGObject: https://wiki.gnome.org/action/show/Projects/PyGObject
-.. _pip: https://pip.pypa.io/en/latest/installing.html
-.. _SourceForge: http://bioden.sourceforge.net/
+.. _SourceForge: http://sourceforge.net/projects/bioden/
+.. _documentation: http://bioden.sourceforge.net/
+.. _Sphinx: http://sphinx-doc.org/
+.. _virtualenv: https://virtualenv.pypa.io/
+.. _`pull request`: https://help.github.com/articles/creating-a-pull-request/
