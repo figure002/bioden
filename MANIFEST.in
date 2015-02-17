@@ -1,4 +1,4 @@
-include *.txt *.rst bioden.nsi setup-win.py
+include *.txt *.rst bioden.nsi win32.py
 recursive-include bioden *.glade
 graft data
 graft docs
