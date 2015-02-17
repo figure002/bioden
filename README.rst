@@ -2,6 +2,14 @@
 BioDen
 ======
 
+BioDen is a data transformer for files containing taxon biomass/density data for
+ecotopes. In general the input file of BioDen includes a list of records that
+give species name, an abundance measure (biomass and/or density), a sample code,
+the surface sampled, and the ecotope. This list is transformed to a table in
+which the rows represent species (names) and the columns represent samples. This
+output table can serve as the input file for various software applications that
+conduct species community analyses.
+
 Requirements
 ============
 
