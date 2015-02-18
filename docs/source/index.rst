@@ -3,13 +3,13 @@ Welcome to BioDen's documentation!
 ==================================
 
 BioDen is a data normaliser and processor for files containing taxon
-biomass/density data for ecotopes. The name BioDen is a combination of the
-words biomass and density. In general the input file of BioDen includes a
-list of records (rows in a table) that give species name, an abundance measure
-(biomass and/or density), a sample code, the surface sampled and the ecotope.
-This list is transformed to a table in which the rows represent species (names)
-and the columns represent samples. This table can serve as the input file for
-various programs that conduct species community analyses.
+biomass/density data for ecotopes. In general the input file of BioDen includes
+a list of records (rows in a table) that give species name, an abundance measure
+(biomass and/or density), a sample code, the surface sampled and the ecotope
+(see :download:`input example <input_example.html>`). This list is transformed
+to a table in which the rows represent species and the columns represent samples
+(see :ref:`ouput examples <output_files>`). This table can serve as the input
+file for various software applications that conduct species community analyses.
 
 .. figure:: bioden_screenshot.png
    :scale: 100 %
@@ -35,6 +35,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   installation
    user_manual
 
 Indices and tables
@@ -43,4 +44,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

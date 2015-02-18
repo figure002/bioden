@@ -1,51 +1,19 @@
+.. _user_manual:
+
 =========================================
-BioDen User Manual
+User Manual
 =========================================
 
-Welcome! This is the documentation for BioDen 0.3, last updated 19 Feb, 2011.
+:Release: |release|
+:Date: |today|
 
-Introduction
-============
 
-BioDen is a data normaliser and processor for files containing taxon
-biomass/density data for ecotopes. The name BioDen is a combination of the
-words biomass and density. In general the input file of BioDen includes a list
-of records (rows in a table) that give species name, an abundance measure
-(biomass and/or density), a sample code, the surface sampled and the ecotope
-(see :download:`input example <input_example.html>`). This list is transformed
-to a table in which the rows represent species (names) and the columns
-represent samples (see :ref:`ouput examples <output_files>`). This table can serve as the input file
-for various programs that conduct species community analyses.
-
-Disclaimer
-==========
-
-The Windows® installer for BioDen comes bundled with third party dependencies.
-The third party tools bundled with BioDen are property of their individual
-authors and are governed by their individual applicable license.
-
-Installing BioDen
-====================
-
-Microsoft® Windows®
--------------------
-
-For Windows users, an installer is available that includes the BioDen package
-together with necessary pre-requisites.
-
-GNU/Linux
----------
-
-GNU/Linux users can use the source package for BioDen. The source package
-doesn't contain the pre-requisites. You'll have to install missing requirements
-manually with your package manager. See the INSTALL file for more information.
-
-Using BioDen
-============
+Starting BioDen
+===============
 
 On Windows, go to Start menu > All Programs > GiMaRIS > BioDen > BioDen.
 
-Linux users can just run ``bioden.pyw`` after unpacking the archive.
+GNU/Linux users can just execute ``bioden``.
 
 Once bioden is started, you'll be presented with its main window.
 
@@ -75,9 +43,12 @@ Property for calculations
 
 Format for output files
     The format to save the output files in. You have a choice between "Comma
-    Separated Values (.csv)" and "Microsoft Excel 97/2000/XP (.xls)". Note that
-    Excel (.xls) files support a maximum of 256 columns. Columns that exceed
-    this limit won't be exported!
+    Separated Values (.csv)" and "Microsoft Excel 97/2000/XP (.xls)".
+
+    .. note::
+
+      Microsoft Excel files (.xls) support a maximum of 256 columns. Columns
+      that exceed this limit will not be exported!
 
 Advanced Options
     Clicking this toggle button shows/hides the advanced options.
@@ -154,11 +125,11 @@ Output Files
 BioDen produces several output files in the specified output folder in the
 spcified format. Output files are saved in either CSV (Comma Separated Values)
 format or in XLS (Microsoft Excel 97/2000/XP) format, and can be opened with
-any spreadsheet application (e.g. Microsoft® Excel®, OpenOffice.org Calc).
+any spreadsheet application (e.g. Microsoft Excel, OpenOffice Calc).
 
 The output files are described below:
 
-Raw ecotope files (raw_<property>_<ecotope>.csv)
+Raw ecotope files (``raw_<property>_<ecotope>.csv``)
     The original data is split by ecotope. So one data file per ecotope is
     exported. The non-grouped values are exported, but the data has been
     re-ordered.
@@ -166,7 +137,7 @@ Raw ecotope files (raw_<property>_<ecotope>.csv)
     Each column is a sample, and each row contains the abundance measures for
     a species (see :download:`example output <output_raw.html>`).
 
-Grouped files (grouped_<property>_<ecotope>.csv)
+Grouped files (``grouped_<property>_<ecotope>.csv``)
     One data file per ecotope is exported. Each file contains the calculated
     sample groups for that ecotope. Sample groups were created by summing
     samples for that ecotope until the sum of the sample surfaces reached
@@ -176,7 +147,7 @@ Grouped files (grouped_<property>_<ecotope>.csv)
     Each column is a sample group, and each row contains the abundance measures
     for a species (see :download:`example output <output_grouped.html>`).
 
-AMBI group files (ambi_<property>_<ecotope>.csv)
+AMBI group files (``ambi_<property>_<ecotope>.csv``)
     One data file per ecotope is exported. Each file contains the calculated
     sample groups for that ecotope. Sample groups were created by summing
     samples for that ecotope until the sum of the sample surfaces reached the
@@ -187,7 +158,7 @@ AMBI group files (ambi_<property>_<ecotope>.csv)
     Each column is a sample group, and each row contains the abundance measures
     for a species (see :download:`example output <output_ambi.html>`).
 
-Representatives data file (representatives_<property>.csv)
+Representatives data file (``representatives_<property>.csv``)
     One data file is exported. The file contains one normalized sample group
     for each ecotope. The sample group that best represents the ecotope is
     exported. The biodiversity for all sample groups are calculated, and the
@@ -203,7 +174,7 @@ Viewing Output Files
 
 The output files created by BioDen are stored in either CSV format or XLS
 format. You can view these output files in any spreadsheet application (e.g.
-Microsoft® Excel®, OpenOffice.org Calc).
+Microsoft Excel, OpenOffice Calc).
 
 Double clicking an XLS file should open it in your spreadsheet application.
 To open a CSV file however, your spreadsheet application needs to know some
@@ -213,10 +184,10 @@ comma. So you need to tell your spreadsheet application to use the comma
 character as the field delimiter, along some other properties. Below is
 explained how to do this with the two most popular spreadsheet applications.
 
-Microsoft® Excel® 2007
+Microsoft Excel 2007
 ----------------------
 
-1. Start Microsoft® Excel®. Make sure you have open the Excel® 2007 worksheet
+1. Start Microsoft Excel. Make sure you have open the Excel 2007 worksheet
    that you would like to import the ouput data file into.
 2. Go to the "Data" tab.
 3. Click on the "From Text" button. This will open the file select browser
@@ -234,10 +205,10 @@ Microsoft® Excel® 2007
 6. Press "Finish". The data from the output file should now be displayed in
    the correct columns.
 
-OpenOffice.org Calc
+OpenOffice Calc
 -------------------
 
-1. Right-click on an output CSV file, and select "Open With > OpenOffice.org
+1. Right-click on an output CSV file, and select "Open With > OpenOffice
    Calc". The "Text Import" window should now appear.
 2. In the Text Import window, set:
 
@@ -270,4 +241,3 @@ Troubleshooting
     BioDen has the option to install the required DLL. To fix this problem,
     run the installer for BioDen and make sure that the "Microsoft Visual C++"
     option is checked. This will install the required DLL for BioDen.
-
