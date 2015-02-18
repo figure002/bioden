@@ -35,8 +35,10 @@ Package Index::
 
     pip install -r requirements.txt
 
-Windows users first need to install PyGObject_. Then use ``pip`` as described
-above to install the remaining dependencies.
+Windows users can install the PyGObject_ Windows installer with Gtk3 support.
+Then use ``pip`` as described above to install the remaining dependencies. Note
+that this step is not needed if you have the Windows installer for BioDen, which
+comes bundeled with the requirements.
 
 
 Installation
