@@ -80,8 +80,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">The CSV file containing the biomass and density data to be normalized.</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Select input data file:</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Input data file</property>
                 <property name="justify">right</property>
               </object>
               <packing>
@@ -96,8 +96,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Select the folder to which all output files should be saved.</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Select output folder:</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Output folder</property>
                 <property name="justify">right</property>
               </object>
               <packing>
@@ -112,8 +112,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">The property to perform the calculations on. Can be either 'biomass' or 'density'.</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Property for calculations:</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Property for calculations</property>
                 <property name="justify">right</property>
               </object>
               <packing>
@@ -128,8 +128,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">The file format to save the output files in.</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Format for output files:</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Format for output files</property>
                 <property name="justify">right</property>
               </object>
               <packing>
@@ -146,8 +146,10 @@
                 <property name="xalign">0</property>
                 <child>
                   <object class="GtkFileChooserButton" id="chooser_input_file">
+                    <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">end</property>
                     <property name="title" translatable="yes">Select Data File</property>
                   </object>
                 </child>
@@ -166,8 +168,10 @@
                 <property name="xalign">0</property>
                 <child>
                   <object class="GtkFileChooserButton" id="chooser_output_folder">
+                    <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">end</property>
                     <property name="action">select-folder</property>
                     <property name="title" translatable="yes">Select Output Folder</property>
                   </object>
@@ -190,6 +194,7 @@
                     <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">end</property>
                     <property name="active_id">0</property>
                     <items>
                       <item id="0" translatable="yes">biomass</item>
@@ -215,6 +220,8 @@
                     <property name="width_request">220</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="active">0</property>
                     <property name="active_id">0</property>
                     <items>
                       <item id="0" translatable="yes">Comma Separated Values (.csv)</item>
@@ -292,14 +299,17 @@
                   <object class="GtkGrid" id="grid2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
                     <property name="row_spacing">5</property>
                     <property name="column_spacing">10</property>
+                    <property name="column_homogeneous">True</property>
                     <child>
                       <object class="GtkLabel" id="label_sample_surface">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">The sample surface used for AMBI files.</property>
-                        <property name="label" translatable="yes">Target sample surface:</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Target sample surface</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -312,8 +322,9 @@
                       <object class="GtkLabel" id="label_round">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Number of decimals to round values to. Value -1 means don't round.</property>
-                        <property name="label" translatable="yes">Round values to n decimals:</property>
+                        <property name="tooltip_text" translatable="yes">Number of decimals to round values to in the output files. Value of -1 means do not round.</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Number of decimals to round to</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -324,9 +335,11 @@
                     </child>
                     <child>
                       <object class="GtkEntry" id="entry_sample_surface">
+                        <property name="width_request">18</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="width_chars">5</property>
+                        <property name="halign">end</property>
+                        <property name="width_chars">13</property>
                         <property name="text" translatable="yes">0.2</property>
                       </object>
                       <packing>
@@ -340,6 +353,7 @@
                       <object class="GtkSpinButton" id="spinbutton_round">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="halign">end</property>
                         <property name="width_chars">5</property>
                         <property name="adjustment">adjustment_round</property>
                         <property name="climb_rate">1</property>
@@ -358,7 +372,7 @@
                   <object class="GtkLabel" id="label_advanced_options">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Advanced Options</property>
+                    <property name="label" translatable="yes">Advanced options</property>
                   </object>
                 </child>
               </object>
@@ -379,12 +393,14 @@
                     <property name="can_focus">False</property>
                     <property name="row_spacing">5</property>
                     <property name="column_spacing">10</property>
+                    <property name="column_homogeneous">True</property>
                     <child>
                       <object class="GtkLabel" id="label_delimiter">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">A one-character string used to separate fields in the input CSV file.</property>
-                        <property name="label" translatable="yes">Field delimiter of the input file:</property>
+                        <property name="tooltip_text" translatable="yes">Character used to separate fields in the input CSV file.</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Field delimiter</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -397,8 +413,9 @@
                       <object class="GtkLabel" id="label_quotechar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">A one-character string used to quote fields containing special characters in the input CSV file.</property>
-                        <property name="label" translatable="yes">Quote character of the input file:</property>
+                        <property name="tooltip_text" translatable="yes">Character used to quote fields in the input CSV file.</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Quote character</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -411,8 +428,9 @@
                       <object class="GtkEntry" id="entry_delimiter">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="halign">end</property>
                         <property name="max_length">1</property>
-                        <property name="width_chars">4</property>
+                        <property name="width_chars">13</property>
                         <property name="text" translatable="yes">;</property>
                       </object>
                       <packing>
@@ -426,8 +444,9 @@
                       <object class="GtkEntry" id="entry_quotechar">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="halign">end</property>
                         <property name="max_length">1</property>
-                        <property name="width_chars">4</property>
+                        <property name="width_chars">13</property>
                         <property name="text" translatable="yes">"</property>
                       </object>
                       <packing>
@@ -443,7 +462,7 @@
                   <object class="GtkLabel" id="label_csv_options">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">CSV Input File Options</property>
+                    <property name="label" translatable="yes">CSV input file options</property>
                   </object>
                 </child>
               </object>
