@@ -10,6 +10,9 @@ which the rows represent species (names) and the columns represent samples. This
 output table can serve as the input file for various software applications that
 conduct species community analyses.
 
+.. image:: https://img.shields.io/badge/license-GPLv3-red.svg
+        :target: http://www.gnu.org/copyleft/gpl.html
+
 Requirements
 ============
 
