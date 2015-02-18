@@ -34,6 +34,8 @@ from bioden import __copyright__, __version__, resource_filename
 import bioden.std
 import bioden.processor
 
+USER_MANUAL_URL = "http://bioden.sourceforge.net/user_manual.html"
+
 class ProgressDialog(object):
     """Display a progress dialog."""
 
@@ -250,9 +252,4 @@ class MainWindow(object):
 
     def on_help(button, section):
         """Display the help contents in the web browser."""
-        path = os.path.abspath(os.path.join('.','docs','index.html'))
-        if path.startswith('/'):
-            url = "file://{0}".format(path)
-        else:
-            url = "file:///{0}".format(path)
-        webbrowser.open(url)
+        webbrowser.open(USER_MANUAL_URL)
