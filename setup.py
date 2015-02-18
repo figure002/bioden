@@ -40,11 +40,7 @@ setup(
     ],
     package_data={
         'bioden': [
-            'glade/about.glade',
-            'glade/errdialog.glade',
-            'glade/main.glade',
-            'glade/main_win7.glade',
-            'glade/pdialog.glade',
+            'glade/*.glade'
         ]
     },
     entry_points={

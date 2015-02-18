@@ -60,10 +60,9 @@ Documentation
 Full documentation_ can be found on the BioDen project page on SourceForge_.
 Alternatively, the same documentation can be built using Sphinx_::
 
-    $ cd docs
-    $ make html
+    $ python setup.py build_sphinx
 
-Then launch ``docs/_build/html/index.html`` in your browser.
+Then launch ``build/sphinx/html/index.html`` in your browser.
 
 
 Contributing
