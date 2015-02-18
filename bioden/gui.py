@@ -37,7 +37,7 @@ import bioden.processor
 class ProgressDialog(object):
     """Display a progress dialog."""
 
-    def __init__(self, parent=None, worker=None):
+    def __init__(self, parent=None):
         self.worker = None
         self.builder = Gtk.Builder()
         self.builder.add_from_file( resource_filename('glade/progress_dialog.glade') )
@@ -49,6 +49,29 @@ class ProgressDialog(object):
         self.textbuffer = self.builder.get_object('textbuffer_details')
         self.builder.connect_signals(self)
         self.dialog.show()
+
+    def on_progress_dialog_cancel(self, widget, data=None):
+        """Stop the worker and close the progress dialog."""
+        dialog = Gtk.MessageDialog(parent=self.dialog, flags=0,
+            type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            message_format="Are you sure you want to cancel the current process?")
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+
+        response = dialog.run()
+        if response == Gtk.ResponseType.YES:
+            dialog.destroy()
+        else:
+            dialog.destroy()
+            return True
+
+        try:
+            self.worker.stop()
+            self.worker.join()
+        except:
+            pass
+
+        self.dialog.destroy()
 
     def set_worker(self, worker):
         self.worker = worker
@@ -118,15 +141,6 @@ class MainWindow(object):
         """Close the application."""
         Gtk.main_quit()
 
-    def on_progress_dialog_destroy(self, widget, data=None):
-        """Stop the worker and close the progress dialog."""
-        try:
-            self.worker.stop()
-            self.worker.join()
-        except:
-            pass
-        widget.destroy()
-
     def on_button_start_clicked(self, widget, data=None):
         """Start processing the data."""
         input_file = self.chooser_input_file.get_filename()
@@ -175,6 +189,7 @@ class MainWindow(object):
         if decimals >= 0:
             self.worker.set_round(decimals)
 
+        # Pass the worker to the progress dialog.
         self.progress_dialog.set_worker(self.worker)
 
         # Start processing the data.
@@ -182,19 +197,17 @@ class MainWindow(object):
 
     def on_process_finished(self, sender):
         """Show a message dialog showing that the process was finished."""
+        self.progress_dialog.destroy()
         output_folder = self.builder.get_object('chooser_output_folder').get_filename()
-
         message_finished = self.show_message("Finished!",
             "The output files have been saved to\n%s." % output_folder)
 
     def on_load_data_failed(self, sender, strerror, data=None):
         """Show a error dialog showing that loading the data has failed."""
-        self.progress_dialog.dialog.destroy()
+        self.progress_dialog.destroy()
 
-        # Build an error dialog.
         builder = Gtk.Builder()
         builder.add_from_file( resource_filename('glade/error_dialog.glade') )
-
         dialog = builder.get_object('error_dialog')
         dialog.set_transient_for(self.window)
 
@@ -219,12 +232,11 @@ class MainWindow(object):
 
     def show_message(self, title, message, type=Gtk.MessageType.INFO):
         """Show a message dialog showing that input file was not set."""
-        dialog = Gtk.MessageDialog(parent=None, flags=0,
+        dialog = Gtk.MessageDialog(parent=self.window, flags=0,
             type=type,
             buttons=Gtk.ButtonsType.OK,
             message_format=title)
         dialog.format_secondary_text(message)
-        dialog.set_transient_for(self.window)
         dialog.run()
         dialog.destroy()
 
