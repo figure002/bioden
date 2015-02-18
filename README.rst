@@ -62,7 +62,10 @@ Windows installers can be obtained from SourceForge_.
 Documentation
 =============
 
-Full documentation_ can be found on the BioDen project page on SourceForge_.
+The documentation can be found here:
+
+http://bioden.sourceforge.net/
+
 Alternatively, the same documentation can be built using Sphinx_::
 
     $ python setup.py build_sphinx
@@ -93,7 +96,6 @@ Python environment::
 
 .. _PyGObject: https://wiki.gnome.org/action/show/Projects/PyGObject
 .. _SourceForge: http://sourceforge.net/projects/bioden/
-.. _documentation: http://bioden.sourceforge.net/
 .. _Sphinx: http://sphinx-doc.org/
 .. _virtualenv: https://virtualenv.pypa.io/
 .. _`pull request`: https://help.github.com/articles/creating-a-pull-request/
