@@ -1,3 +1,4 @@
+appdirs
 PyGObject>=3.10
 xlrd
 xlwt

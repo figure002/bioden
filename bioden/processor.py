@@ -26,6 +26,7 @@ import threading
 from sqlite3 import dbapi2 as sqlite
 import csv
 
+from appdirs import user_data_dir
 from gi.repository import GObject
 import xlrd
 
@@ -90,14 +91,14 @@ class DataProcessor(threading.Thread):
 
     def set_directives(self):
         """Set the path to the database file."""
-        data_path = os.path.expanduser(os.path.join('~','.bioden'))
+        data_path = user_data_dir("BioDen", "GiMaRIS")
 
         # Check if the data folder exists. If not, create it.
         if not os.path.exists(data_path):
             os.makedirs(data_path)
 
         # Set the path to the database file.
-        self._dbfile = os.path.join(data_path, 'data.sqlite')
+        self._dbfile = os.path.join(data_path, 'data.db')
 
     def set_progress_dialog(self, dialog):
         self._pdialog = dialog

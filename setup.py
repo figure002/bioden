@@ -34,6 +34,7 @@ setup(
     keywords = 'gimaris ecotope biomass density ambi',
     packages=find_packages(exclude=['docs']),
     install_requires=[
+        'appdirs',
         'PyGObject>=3.10',
         'xlrd',
         'xlwt',

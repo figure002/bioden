@@ -22,6 +22,8 @@ BioDen has the following dependencies:
 
 * Python (>=2.7)
 
+  * appdirs
+
   * PyGObject_ (>=3.10)
 
   * xlrd
@@ -31,7 +33,7 @@ BioDen has the following dependencies:
 On Debian (based) systems, the dependencies can be installed from the
 software repository::
 
-    sudo apt-get install python-gobject python-xlrd python-xlwt
+    sudo apt-get install python-appdirs python-gobject python-xlrd python-xlwt
 
 More recent versions of some Python packages can be obtained via the Python
 Package Index::
