@@ -1,4 +1,4 @@
 appdirs
-PyGObject>=3.10
+PyGObject>=3.2
 xlrd
 xlwt

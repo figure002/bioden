@@ -35,7 +35,7 @@ setup(
     packages=find_packages(exclude=['docs']),
     install_requires=[
         'appdirs',
-        'PyGObject>=3.10',
+        'PyGObject>=3.2',
         'xlrd',
         'xlwt',
     ],

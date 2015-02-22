@@ -24,7 +24,7 @@ BioDen has the following dependencies:
 
   * appdirs
 
-  * PyGObject_ (>=3.10)
+  * PyGObject_ (>=3.2)
 
   * xlrd
 
