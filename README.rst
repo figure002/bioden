@@ -70,7 +70,7 @@ Documentation
 
 The documentation can be found here:
 
-http://bioden.sourceforge.net/
+http://bioden.readthedocs.org/
 
 Alternatively, the same documentation can be built using Sphinx_::
 
