@@ -13,6 +13,10 @@ conduct species community analyses.
 .. image:: https://img.shields.io/badge/license-GPLv3-red.svg
         :target: http://www.gnu.org/copyleft/gpl.html
 
+.. image:: https://readthedocs.org/projects/bioden/badge/?version=latest
+        :target: https://readthedocs.org/projects/bioden/?badge=latest
+        :alt: Documentation Status
+
 Requirements
 ============
 

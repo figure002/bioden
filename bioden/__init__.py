@@ -25,6 +25,7 @@ def module_path():
     return os.path.dirname(unicode(__file__, sys.getfilesystemencoding()))
 
 def resource_filename(resource_name):
+    """Return file path for package resource."""
     if we_are_frozen():
         return os.path.join(module_path(), resource_name)
     return pkg_resources.resource_filename(__name__, resource_name)
