@@ -89,7 +89,8 @@ Please follow the next steps:
 3. Commit changes to the new branch.
 4. Send a `pull request`_.
 
-Follow the next steps to run and develop BioDen within a virtualenv_ isolated
+First make sure that all dependencies are installed as described above. Then
+follow the next steps to run and develop BioDen within a virtualenv_ isolated
 Python environment::
 
     $ git clone https://github.com/figure002/bioden.git
