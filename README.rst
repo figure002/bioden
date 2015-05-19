@@ -93,7 +93,7 @@ First make sure that all dependencies are installed as described above. Then
 follow the next steps to run and develop BioDen within a virtualenv_ isolated
 Python environment::
 
-    $ git clone https://github.com/figure002/bioden.git
+    $ git clone https://github.com/YOUR-USERNAME/bioden.git
     $ cd bioden/
     $ virtualenv --system-site-packages env
     $ source env/bin/activate
